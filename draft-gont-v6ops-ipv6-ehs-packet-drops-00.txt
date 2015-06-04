@@ -1,0 +1,616 @@
+
+
+
+
+IPv6 Operations Working Group (v6ops)                            F. Gont
+Internet-Draft                                    SI6 Networks / UTN-FRH
+Intended status: Informational                                   S. Haug
+Expires: November 16, 2015                                      Broadnet
+                                                                  W. Liu
+                                                     Huawei Technologies
+                                                            May 15, 2015
+
+
+    Operational Implications of IPv6 Packets with Extension Headers
+               draft-gont-v6ops-ipv6-ehs-packet-drops-00
+
+Abstract
+
+   This document summarizes the security, performance, and operational
+   implications of IPv6 extension headers, and tries to analyze the
+   reasons for which packets with IPv6 extension headers may get dropped
+   in the public Internet.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on November 16, 2015.
+
+Copyright Notice
+
+   Copyright (c) 2015 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+
+
+
+Gont, et al.            Expires November 16, 2015               [Page 1]
+
+Internet-Draft           IPv6 Extension Headers                 May 2015
+
+
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   2.  Previous Work on IPv6 Extension Headers . . . . . . . . . . .   2
+   3.  Performance Implications  . . . . . . . . . . . . . . . . . .   3
+   4.  Security Implications . . . . . . . . . . . . . . . . . . . .   4
+   5.  Operational Implications  . . . . . . . . . . . . . . . . . .   5
+   6.  A possible attack vector  . . . . . . . . . . . . . . . . . .   5
+   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
+   8.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
+   9.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
+   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .   7
+     10.1.  Normative References . . . . . . . . . . . . . . . . . .   7
+     10.2.  Informative References . . . . . . . . . . . . . . . . .   8
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
+
+1.  Introduction
+
+   IPv6 Extension Headers (EHs) allow for the extension of the IPv6
+   protocol, and provide support for core functionality such as IPv6
+   fragmentation.  However, IPv6 Extension Headers have been deemed to
+   present a challenge to IPv6 implementations and networks, and have
+   been assumed/known to be intentionally dropped in some existing IPv6
+   deployments.
+
+   Discussions over the security and operational implications of IPv6
+   extension headers come up over and over again at both in IETF circles
+   and other venues, and not infrequently some key aspects involving
+   IPv6 extension headers are overlooked.
+
+   This document tries raise awareness about the security and
+   operational implications of IPv6 Extension Headers, and the reasons
+   for some network operators have opted (or not) to drop packets
+   containing IPv6 Extension Headers.
+
+   Section 2 of this document summarizes the work that has been done in
+   the area of IPv6 extension headers.  Section 5 discusses the
+   performance implications of IPv6 Extension Headers, while Section 4
+   discusses the security implications of IPv6 Extension Headers.
+
+2.  Previous Work on IPv6 Extension Headers
+
+   Some of the implications of IPv6 Extension Headers have been
+   discussed in IETF circles.  For example, [I-D.taylor-v6ops-fragdrop]
+   discusses a rationale for which operators drop IPv6 fragments.
+
+
+
+Gont, et al.            Expires November 16, 2015               [Page 2]
+
+Internet-Draft           IPv6 Extension Headers                 May 2015
+
+
+   [I-D.wkumari-long-headers] discusses possible issues arising from
+   "long" IPv6 header chains.  [RFC7045] clarifies how intermediate
+   nodes should deal with IPv6 extension headers.  [RFC7112] discusses
+   the issues arising in a specific case where the IPv6 header chain is
+   fragmented into two or more fragments (and formally forbids such
+   case).  [I-D.kampanakis-6man-ipv6-eh-parsing] describes how
+   inconsistencies in the way IPv6 packets with extension headers are
+   parsed by different implementations may result in evasion of security
+   controls, and presents guidelines for parsing IPv6 extension headers
+   with a goal of providing a common and consistent parsing methodology
+   for IPv6 implementations.  [RFC6980] analyzes the security
+   implications of employing IPv6 fragmentation with Neighbor Discovery
+   for IPv6, and formally recommends against such usage.  Finally,
+   [RFC7123] discusses how some popular RA-Guard implementations are
+   subject to evasion by means of IPv6 extension headers.
+
+   Some preliminary measurements regarding the extent to which packet
+   containing IPv6 EHs are dropped n the public Internet have been
+   presented in [PMTUD-Blackholes], [Gont-IEPG88], [Gont-Chown-IEPG89],
+   and [Linkova-Gont-IEPG90].  [I-D.ietf-v6ops-ipv6-ehs-in-real-world]
+   presents more comprehensive results and documents the methodology for
+   obtaining the presented results..
+
+3.  Performance Implications
+
+   Some IPv6 router implementations suffer from a negative performance
+   impact when IPv6 Extension Headers are employed.
+
+   In the most trivial case, a packet that includes a Hop-by-Hop Options
+   header will typically go through the slow forwarding path, and be
+   processed by the router's CPU.  Another case is that in which a
+   router that has been configured to enforce an ACL based on upper-
+   layer information (e.g., upper layer protocol or TCP Destination
+   Port).  In such case, the router will need to process the entire IPv6
+   header chain in order to find the required information, and this may
+   cause the packet to be processed in the slow path [Cisco-EH-Cons].
+
+   Processing a large amounts of traffic in the slow path may cause the
+   router to be unable to handle the same traffic loads when compared to
+   normal packets, and may result in Denial of Service (DoS) scenarios.
+
+   We note that, for obvious reasons, the aforementioned performance
+   issues may also affect other devices such as firewalls, Network
+   Intrusion Detection Systems (NIDS), etc.  [Zack-FW-Benchmark].
+
+
+
+
+
+
+
+Gont, et al.            Expires November 16, 2015               [Page 3]
+
+Internet-Draft           IPv6 Extension Headers                 May 2015
+
+
+4.  Security Implications
+
+   The security implications of IPv6 Extension Headers generally fall
+   into one or more of these categories:
+
+   o  Evasion of security controls
+
+   o  DoS due to processing requirements
+
+   o  DoS due to implementation errors
+
+   o  Extension Header-specific issues
+
+   Different from IPv4, where the upper-layer protocol can be found
+   after the variable-length IPv4 header, the structure of IPv6 packets
+   is both more flexible and complex.  Namely, finding the upper-layer
+   information may imply processing the (daisy-chain like) entire IPv6
+   header chain.  This has been often overlooked, and a number of
+   security devices have been found to be trivially evasible by
+   inserting one or more IPv6 Extension Headers between the main IPv6
+   header and the upper layer protocol.  [RFC7113] describes this issue
+   for the RA-Guard case, but the same techniques can be employed for
+   circumventing e.g. some IPv6 firewalls.  Additionally,
+   inconsistencies in how some packets may be processed may result in
+   evasion of security controls [I-D.kampanakis-6man-ipv6-eh-parsing]
+   [Atlasis2014] [BH-EU-2014].
+
+   As noted in Section 5, packets that employ IPv6 Extension Headers may
+   have a negative performance impact on the handling devices.  Unless
+   appropriate mitigations are put in place (e.g., packet filtering and/
+   or rate-limiting), an attacker could simply send a large amount of
+   IPv6 traffic employing IPv6 Extension Headers with the purpose of
+   performing a Denial of Service (DoS) attack.
+
+   IPv6 implementations, as virtually every piece of software, tend to
+   mature over time.  While the IPv6 protocol itself (and many
+   implementations) have been around for a long time already, bugs in
+   IPv6 Extension Header processing have been recently found in a number
+   of implementations.  Because there is currently almost no reliance on
+   IPv6 Extension headers, the corresponding code paths are rarely
+   exercised, and there is the potential that bugs still remain to be
+   discovered in some implementations.
+
+   Besides the general implications of IPv6 Extension Headers, each
+   Extension Header tends to its own specific implications.  One
+   particular case is that of the Fragment Header, which is employed to
+   provide the fragmentation function in IPv6.  While many of the
+   security implications of the fragmentation/reassembly mechanism are
+
+
+
+Gont, et al.            Expires November 16, 2015               [Page 4]
+
+Internet-Draft           IPv6 Extension Headers                 May 2015
+
+
+   known from the IPv4 world, many of the related issues have crept into
+   IPv6 implementations.  They range from Denial of Service attacks to
+   information leakage (see e.g.
+   [I-D.ietf-6man-predictable-fragment-id], [Bonica-NANOG58],
+   [Atlasis2012]).
+
+5.  Operational Implications
+
+   There are a number of reasons for which an intermediate system may
+   need to process the entire IPv6 extension header chain to find the
+   layer-4 header.  Namely:
+
+   o  Enforcing infrastructure ACLs
+
+   o  DDoS management
+
+   o  ECMP or other load-balancing implementation based on a hash of the
+      four-tuple (src addr, dst addr, src port, dst port)
+
+   o  Customer requests for filtering
+
+   o  Implementation of edge-to-core customer sanitisation filters
+
+   o  Route-processor protection
+
+   When processing the entire IPv6 header chain would lead to slow-path
+   forwarding, the only option an operation may be left with is to drop
+   the corresponding packets.
+
+6.  A possible attack vector
+
+   The widespread drop of IPv6 packets employing IPv6 Extension Headers
+   can, in some scenarios, be exploited for malicious purposes: if
+   packets employing IPv6 EHs are known to be dropped on the path from
+   one system (say, "A") to another (say, "B"), an attacker could cause
+   packets sent from A to B to be dropped by sending a forged ICMPv6
+   Packet Too Big (PTB) [RFC4443] error message to A (with a Next-Hop
+   MTU smaller than 1280), such that subsequent packets from A to B
+   include a fragment header (i.e., they result in atomic fragments
+   [RFC6946]).
+
+   Possible scenarios where this attack vector could be exploited
+   include (but are not limited to):
+
+   o  Communication between any two systems through to public network
+      (e.g., client from/to server or server from/to server), where
+      packets with IPv6 extension headers are dropped by some
+      intermediate router
+
+
+
+Gont, et al.            Expires November 16, 2015               [Page 5]
+
+Internet-Draft           IPv6 Extension Headers                 May 2015
+
+
+   o  Communication between two BGP peers employing IPv6 transport,
+      where these BGP peers implement ACLs to drop IPv6 fragments (to
+      avoid control-plane attacks)
+
+   The aforementioned attack vector is exacerbated by the following
+   factors:
+
+   o  The attacker does not need to forge the IPv6 Source Address of his
+      attack packets.  Hence, deployment of simple BCP38 filters will
+      not help as a counter-measure.
+
+   o  Only the IPv6 addresses of the IPv6 packet embedded in the ICMPv6
+      payload need to be forged.  While one could envision filtering
+      devices enforcing BCP38-style filters on the ICMPv6 payload, the
+      use of extension (by the attacker) could make this difficult, if
+      at all possible.
+
+   o  Many implementations fail to perform validation checks on the
+      received ICMPv6 error messages, as recommended in Section 5.2 of
+      [RFC4443] and documented in [RFC5927].  It should be noted that in
+      some cases, such as when an ICMPv6 error message has (supposedly)
+      been elicited by a connection-less transport protocol (or some
+      other connection-less protocol being encapsulated in IPv6), it may
+      be virtually impossible to perform validation checks on the
+      received ICMPv6 error messages.  And, because of IPv6 extension
+      headers, the ICMPv6 payload might not even contain any useful
+      information on which to perform validation checks.
+
+   o  Upon receipt of one of the aforementioned ICMPv6 "Packet Too Big"
+      error messages, the Destination Cache [RFC4861] is usually updated
+      to reflect that any subsequent packets to such destination should
+      include a Fragment Header.  This means that a single ICMPv6
+      "Packet Too Big" error message might affect multiple communication
+      instances (e.g., TCP connections) with such destination.
+
+   o  A node cannot simply "just drop all incoming ICMPv6 Packet Too Big
+      error messages", or else it would create a PMTUD blackhole.
+
+   Possible mitigations for this issue include:
+
+   o  Filtering incoming ICMPv6 Packet Too Big error messages that
+      advertise a Next-Hop MTU smaller than 1280 bytes.
+
+   o  Artificially reducing the MTU to 1280 bytes and filter incoming
+      ICMPv6 PTB error messages.
+
+   Both of these mitigations come at the expense of possibly preventing
+   communication through SIIT [RFC6145] that rely on IPv6 atomic
+
+
+
+Gont, et al.            Expires November 16, 2015               [Page 6]
+
+Internet-Draft           IPv6 Extension Headers                 May 2015
+
+
+   fragments (see [I-D.ietf-6man-deprecate-atomfrag-generation]), and
+   also implies that the filtering device has the ability to filter ICMP
+   PTB messages based on the contents of the MTU field.
+
+   [I-D.ietf-6man-deprecate-atomfrag-generation] has recently proposed
+   to deprecate the generation of IPv6 atomic fragments, and update the
+   SIIT [RFC6145] such that it does not rely on ICMPv6 atomic fragments.
+   Thus, any of the above mitigations would eliminate the attack vector
+   without any interoperability implications.
+
+7.  IANA Considerations
+
+   There are no IANA registries within this document.  The RFC-Editor
+   can remove this section before publication of this document as an
+   RFC.
+
+8.  Security Considerations
+
+   The security implications of IPv6 extension headers are discussed in
+   Section 4.  A specific attack vector that would leverage the
+   widespread filtering of packets with IPv6 EHs (along with possible
+   countermeasures) is discussed in Section 6.  This document does not
+   introduce any new security issues.
+
+9.  Acknowledgements
+
+   The authors would like to thank (in alphabetical order) [TBD] for
+   providing valuable comments on earlier versions of this document.
+   Additionally, the authors would like to thank participants of the
+   v6ops working group for their valuable input on the topics that led
+   to the publication of this document.
+
+   Fernando Gont would like to thank Jan Zorz and Go6 Lab
+   <http://go6lab.si/> for providing access to systems and networks that
+   were employed to perform experiments and measurements involving
+   packets with IPv6 Extension Headers.  Additionally, he would like to
+   thank SixXS <https://www.sixxs.net> for providing IPv6 connectivity.
+
+10.  References
+
+10.1.  Normative References
+
+   [RFC2460]  Deering, S. and R. Hinden, "Internet Protocol, Version 6
+              (IPv6) Specification", RFC 2460, December 1998.
+
+   [RFC4443]  Conta, A., Deering, S., and M. Gupta, "Internet Control
+              Message Protocol (ICMPv6) for the Internet Protocol
+              Version 6 (IPv6) Specification", RFC 4443, March 2006.
+
+
+
+Gont, et al.            Expires November 16, 2015               [Page 7]
+
+Internet-Draft           IPv6 Extension Headers                 May 2015
+
+
+   [RFC4861]  Narten, T., Nordmark, E., Simpson, W., and H. Soliman,
+              "Neighbor Discovery for IP version 6 (IPv6)", RFC 4861,
+              September 2007.
+
+   [RFC6145]  Li, X., Bao, C., and F. Baker, "IP/ICMP Translation
+              Algorithm", RFC 6145, April 2011.
+
+   [RFC6946]  Gont, F., "Processing of IPv6 "Atomic" Fragments", RFC
+              6946, May 2013.
+
+10.2.  Informative References
+
+   [Atlasis2012]
+              Atlasis, A., "Attacking IPv6 Implementation Using
+              Fragmentation", BlackHat Europe 2012. Amsterdam,
+              Netherlands. March 14-16, 2012,
+              <https://media.blackhat.com/bh-eu-12/Atlasis/bh-eu-12-
+              Atlasis-Attacking_IPv6-Slides.pdf>.
+
+   [Atlasis2014]
+              Atlasis, A., "A Novel Way of Abusing IPv6 Extension
+              Headers to Evade IPv6 Security Devices", May 2014,
+              <http://www.insinuator.net/2014/05/a-novel-way-of-abusing-
+              ipv6-extension-headers-to-evade-ipv6-security-devices/>.
+
+   [BH-EU-2014]
+              Atlasis, A., Rey, E., and R. Schaefer, "Evasion of High-
+              End IDPS Devices at the IPv6 Era", BlackHat Europe 2014,
+              2014, <https://www.ernw.de/download/eu-14-Atlasis-Rey-
+              Schaefer-briefings-Evasion-of-HighEnd-IPS-Devices-wp.pdf>.
+
+   [Bonica-NANOG58]
+              Bonica, R., "IPv6 Extension Headers in the Real World
+              v2.0", NANOG 58. New Orleans, Louisiana, USA. June 3-5,
+              2013, <https://www.nanog.org/sites/default/files/
+              mon.general.fragmentation.bonica.pdf>.
+
+   [Cisco-EH-Cons]
+              Cisco, , "IPv6 Extension Headers Review and
+              Considerations", October 2006,
+              <http://www.cisco.com/en/US/technologies/tk648/tk872/
+              technologies_white_paper0900aecd8054d37d.pdf>.
+
+   [Gont-Chown-IEPG89]
+              Gont, F. and T. Chown, "A Small Update on the Use of IPv6
+              Extension Headers", IEPG 89. London, UK. March 2, 2014,
+              <http://www.iepg.org/2014-03-02-ietf89/
+              fgont-iepg-ietf89-eh-update.pdf>.
+
+
+
+Gont, et al.            Expires November 16, 2015               [Page 8]
+
+Internet-Draft           IPv6 Extension Headers                 May 2015
+
+
+   [Gont-IEPG88]
+              Gont, F., "Fragmentation and Extension header Support in
+              the IPv6 Internet", IEPG 88. Vancouver, BC, Canada.
+              November 13, 2013, <http://www.iepg.org/2013-11-ietf88/
+              fgont-iepg-ietf88-ipv6-frag-and-eh.pdf>.
+
+   [I-D.ietf-6man-deprecate-atomfrag-generation]
+              Gont, F., LIU, S., and T. Anderson, "Deprecating the
+              Generation of IPv6 Atomic Fragments", draft-ietf-6man-
+              deprecate-atomfrag-generation-01 (work in progress), April
+              2015.
+
+   [I-D.ietf-6man-predictable-fragment-id]
+              Gont, F., "Security Implications of Predictable Fragment
+              Identification Values", draft-ietf-6man-predictable-
+              fragment-id-05 (work in progress), April 2015.
+
+   [I-D.ietf-v6ops-ipv6-ehs-in-real-world]
+              Gont, F., Linkova, J., Chown, T., and S. LIU,
+              "Observations on IPv6 EH Filtering in the Real World",
+              draft-ietf-v6ops-ipv6-ehs-in-real-world-00 (work in
+              progress), April 2015.
+
+   [I-D.kampanakis-6man-ipv6-eh-parsing]
+              Kampanakis, P., "Implementation Guidelines for parsing
+              IPv6 Extension Headers", draft-kampanakis-6man-ipv6-eh-
+              parsing-01 (work in progress), August 2014.
+
+   [I-D.taylor-v6ops-fragdrop]
+              Jaeggli, J., Colitti, L., Kumari, W., Vyncke, E., Kaeo,
+              M., and T. Taylor, "Why Operators Filter Fragments and
+              What It Implies", draft-taylor-v6ops-fragdrop-02 (work in
+              progress), December 2013.
+
+   [I-D.wkumari-long-headers]
+              Kumari, W., Jaeggli, J., and R. Bonica, "Operational
+              Issues Associated With Long IPv6 Header Chains", draft-
+              wkumari-long-headers-02 (work in progress), October 2013.
+
+   [Linkova-Gont-IEPG90]
+              Linkova, J. and F. Gont, "IPv6 Extension Headers in the
+              Real World v2.0", IEPG 90. Toronto, ON, Canada. July 20,
+              2014, <http://www.iepg.org/2014-07-20-ietf90/
+              iepg-ietf90-ipv6-ehs-in-the-real-world-v2.0.pdf>.
+
+
+
+
+
+
+
+Gont, et al.            Expires November 16, 2015               [Page 9]
+
+Internet-Draft           IPv6 Extension Headers                 May 2015
+
+
+   [PMTUD-Blackholes]
+              De Boer, M. and J. Bosma, "Discovering Path MTU black
+              holes on the Internet using RIPE Atlas", July 2012,
+              <http://www.nlnetlabs.nl/downloads/publications/
+              pmtu-black-holes-msc-thesis.pdf>.
+
+   [RFC5927]  Gont, F., "ICMP Attacks against TCP", RFC 5927, July 2010.
+
+   [RFC6980]  Gont, F., "Security Implications of IPv6 Fragmentation
+              with IPv6 Neighbor Discovery", RFC 6980, August 2013.
+
+   [RFC7045]  Carpenter, B. and S. Jiang, "Transmission and Processing
+              of IPv6 Extension Headers", RFC 7045, December 2013.
+
+   [RFC7112]  Gont, F., Manral, V., and R. Bonica, "Implications of
+              Oversized IPv6 Header Chains", RFC 7112, January 2014.
+
+   [RFC7113]  Gont, F., "Implementation Advice for IPv6 Router
+              Advertisement Guard (RA-Guard)", RFC 7113, February 2014.
+
+   [RFC7123]  Gont, F. and W. Liu, "Security Implications of IPv6 on
+              IPv4 Networks", RFC 7123, February 2014.
+
+   [RIPE-Atlas]
+              RIPE, , "RIPE Atlas", <https://atlas.ripe.net/>.
+
+   [Zack-FW-Benchmark]
+              Zack, E., "Firewall Security Assessment and Benchmarking
+              IPv6 Firewall Load Tests", IPv6 Hackers Meeting #1,
+              Berlin, Germany. June 30, 2013,
+              <http://www.ipv6hackers.org/meetings/ipv6-hackers-1/zack-
+              ipv6hackers1-firewall-security-assessment-and-
+              benchmarking.pdf>.
+
+Authors' Addresses
+
+   Fernando Gont
+   SI6 Networks / UTN-FRH
+   Evaristo Carriego 2644
+   Haedo, Provincia de Buenos Aires  1706
+   Argentina
+
+   Phone: +54 11 4650 8472
+   Email: fgont@si6networks.com
+   URI:   http://www.si6networks.com
+
+
+
+
+
+
+Gont, et al.            Expires November 16, 2015              [Page 10]
+
+Internet-Draft           IPv6 Extension Headers                 May 2015
+
+
+   Steinar Haug
+   Broadnet
+   Rolfsbuktveien 4C
+   Fornebu  1364
+   Argentina
+
+
+   Will(Shucheng) Liu
+   Huawei Technologies
+   Bantian, Longgang District
+   Shenzhen  518129
+   P.R. China
+
+   Email: liushucheng@huawei.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Gont, et al.            Expires November 16, 2015              [Page 11]
