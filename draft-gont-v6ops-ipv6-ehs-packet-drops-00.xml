@@ -41,20 +41,13 @@
           <street>Rolfsbuktveien 4C</street>
           <code>1364</code>
           <city>Fornebu</city>
-<!--          <region>Provincia de Buenos Aires</region> -->
-          <country>Argentina</country>
+          <country>Norway</country>
         </postal>
-
-<!--
-        <phone>+54 11 4650 8472</phone>
-        <email>fgont@si6networks.com</email>
-        <uri>http://www.si6networks.com</uri>
--->
       </address>
     </author>
 
 
-<author fullname="Will(Shucheng) Liu" initials="W." surname="Liu">
+    <author fullname="Will (Shucheng) Liu" initials="W." surname="Liu">
       <organization>Huawei Technologies</organization>
       <address>
         <postal>
@@ -65,7 +58,20 @@
         </postal>
         <email>liushucheng@huawei.com</email>
       </address>
-</author>
+    </author>
+
+    <author initials="N" surname="Hilliard" fullname="Nick Hilliard">
+      <organization>INEX</organization>
+      <address>
+        <postal>
+          <street>4027 Kingswood Road</street>
+          <city>Dublin</city>
+          <code>24</code>
+          <country>IE</country>
+        </postal>
+        <email>nick@inex.ie</email>
+      </address>
+    </author>
 
     <date year="2015" />
 
@@ -74,7 +80,7 @@
 
     <abstract>
     <t>
-This document summarizes the security, performance, and operational implications of IPv6 extension headers, and tries to analyze the reasons for which packets with IPv6 extension headers may get dropped in the public Internet.
+This document summarizes the security, performance, and operational implications of IPv6 extension headers, and attempts to analyze reasons why packets with IPv6 extension headers may be dropped in the public Internet.
 </t>
     </abstract>
   </front>
@@ -83,12 +89,13 @@ This document summarizes the security, performance, and operational implications
 
 <section title="Introduction" anchor="intro"> 
 <t>
-IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and provide support for core functionality such as IPv6 fragmentation. However, IPv6 Extension Headers have been deemed to present a challenge to IPv6 implementations and networks, and have been assumed/known to be intentionally dropped in some existing IPv6 deployments.
+IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and provide support for core functionality such as IPv6 fragmentation. However, widespread implementation limitations suggest that EHs present a challenge for IPv6 packet routing equipment, and evidence exists to suggest that IPv6 with EHs may be intentionally dropped on the public Internet in some network deployments.
 </t>
-<t>Discussions over the security and operational implications of IPv6 extension headers come up over and over again at both in IETF circles and other venues, and not infrequently some key aspects involving IPv6 extension headers are overlooked.</t>
+
+<t>Discussions about the security and operational implications of IPv6 extension headers are a regular feature in IETF working groups and other places.  Often in these discussions, important security and operational issues are overlooked.</t>
 
 <t>
-This document tries raise awareness about the security and operational implications of IPv6 Extension Headers, and the reasons for some network operators have opted (or not) to drop packets containing IPv6 Extension Headers.
+This document tries to raise awareness about the security and operational implications of IPv6 Extension Headers, and presents  reasons why some networks drop packets containing IPv6 Extension Headers.
 </t>
 
 <t>
@@ -99,12 +106,12 @@ This document tries raise awareness about the security and operational implicati
 <section title="Previous Work on IPv6 Extension Headers" anchor="previous-work">
 <t>Some of the implications of IPv6 Extension Headers have been discussed in IETF circles. For example, <xref target="I-D.taylor-v6ops-fragdrop"/> discusses a rationale for which operators drop IPv6 fragments. <xref target="I-D.wkumari-long-headers"/> discusses possible issues arising from "long" IPv6 header chains. <xref target="RFC7045"/> clarifies how intermediate nodes should deal with IPv6 extension headers. <xref target="RFC7112"/> discusses the issues arising in a specific case where the IPv6 header chain is fragmented into two or more fragments (and formally forbids such case). <xref target="I-D.kampanakis-6man-ipv6-eh-parsing"/> describes how inconsistencies in the way IPv6 packets with extension headers are parsed by different implementations may result in evasion of security controls, and presents guidelines for parsing IPv6 extension headers with a goal of providing a common and consistent parsing methodology for IPv6 implementations. <xref target="RFC6980"/> analyzes the security implications of employing IPv6 fragmentation with Neighbor Discovery for IPv6, and formally recommends against such usage. Finally, <xref target="RFC7123"/> discusses how some popular RA-Guard implementations are subject to evasion by means of IPv6 extension headers.</t>
 
-<t>Some preliminary measurements regarding the extent to which packet containing IPv6 EHs are dropped n the public Internet have been presented in <xref target="PMTUD-Blackholes"/>, <xref target="Gont-IEPG88"/>, <xref target="Gont-Chown-IEPG89"/>, and <xref target="Linkova-Gont-IEPG90"/>. <xref target="I-D.ietf-v6ops-ipv6-ehs-in-real-world"/> presents more comprehensive results and documents the methodology for obtaining the presented results..</t>
+<t>Some preliminary measurements regarding the extent to which packet containing IPv6 EHs are dropped n the public Internet have been presented in <xref target="PMTUD-Blackholes"/>, <xref target="Gont-IEPG88"/>, <xref target="Gont-Chown-IEPG89"/>, and <xref target="Linkova-Gont-IEPG90"/>. <xref target="I-D.ietf-v6ops-ipv6-ehs-in-real-world"/> presents more comprehensive results and documents the methodology for obtaining the presented results.</t>
 </section>
 
 
 <section title="Performance Implications" anchor="performance-implications">
-<t>Some IPv6 router implementations suffer from a negative performance impact when IPv6 Extension Headers are employed.</t>
+<t>FIXME:  Some IPv6 router implementations suffer from a negative performance impact when IPv6 Extension Headers are employed.</t>
 
 <t>In the most trivial case, a packet that includes a Hop-by-Hop Options header will typically go through the slow forwarding path, and be processed by the router's CPU. Another case is that in which a router that has been configured to enforce an ACL based on upper-layer information (e.g., upper layer protocol or TCP Destination Port). In such case, the router will need to process the entire IPv6 header chain in order to find the required information, and this may cause the packet to be processed in the slow path <xref target="Cisco-EH-Cons"/>.</t>
 
@@ -123,25 +130,25 @@ This document tries raise awareness about the security and operational implicati
 </list>
 </t>
 
-<t>Different from IPv4, where the upper-layer protocol can be found after the variable-length IPv4 header, the structure of IPv6 packets is both more flexible and complex. Namely, finding the upper-layer information may imply processing the (daisy-chain like) entire IPv6 header chain. This has been often overlooked, and a number of security devices have been found to be trivially evasible by inserting one or more IPv6 Extension Headers between the main IPv6 header and the upper layer protocol. <xref target="RFC7113"/> describes this issue for the RA-Guard case, but the same techniques can be employed for circumventing e.g. some IPv6 firewalls. Additionally, inconsistencies in how some packets may be processed may result in evasion of security controls <xref target="I-D.kampanakis-6man-ipv6-eh-parsing"/> <xref target="Atlasis2014"/> <xref target="BH-EU-2014"/>.
+<t>Unlike IPv4 headers which are fixed-length and where the upper-layer protocols can be deterministically found at fixed offsets, the structure of IPv6 packets is more flexible and complex. Locating upper-layer protocol information requires that all IPv6 extension header TLV entries are examined. This has presented implementation difficulties, and packet filtering mechanisms on several security devices can be trivially evaded by inserting IPv6 Extension Headers between the main IPv6 header and the upper layer protocol. <xref target="RFC7113"/> describes this issue for the RA-Guard case, but the same techniques can be deployed to circumvent other IPv6 firewall and packet filtering mechanisms.  Additionally, implementation inconsistencies in packet forwarding engines may result in evasion of security controls <xref target="I-D.kampanakis-6man-ipv6-eh-parsing"/> <xref target="Atlasis2014"/> <xref target="BH-EU-2014"/>.
 </t>
 
-<t>As noted in <xref target="operational-implications"/>, packets that employ IPv6 Extension Headers may have a negative performance impact on the handling devices. Unless appropriate mitigations are put in place (e.g., packet filtering and/or rate-limiting), an attacker could simply send a large amount of IPv6 traffic employing IPv6 Extension Headers with the purpose of performing a Denial of Service (DoS) attack.
+<t>FIXME: As noted in <xref target="operational-implications"/>, packets that use IPv6 Extension Headers may have a negative performance impact on the handling devices. Unless appropriate mitigations are put in place (e.g., packet filtering and/or rate-limiting), an attacker could simply send a large amount of IPv6 traffic employing IPv6 Extension Headers with the purpose of performing a Denial of Service (DoS) attack.
 </t>
 
-<t>IPv6 implementations, as virtually every piece of software, tend to mature over time. While the IPv6 protocol itself (and many implementations) have been around for a long time already, bugs in IPv6 Extension Header processing have been recently found in a number of implementations<!-- (see e.g. <xref target="Cisco-Frag"/>)-->. Because there is currently almost no reliance on IPv6 Extension headers, the corresponding code paths are rarely exercised, and there is the potential that bugs still remain to be discovered in some implementations.</t>
+<t>IPv6 implementations, like all other software, tend to mature with time and wide-scale deployment. While the IPv6 protocol itself has existed for almost 20 years, serious bugs related to IPv6 Extension Header processing continue to be found<!-- (see e.g. <xref target="Cisco-Frag1"/> and <xref target="Cisco-Frag2"/>)-->.  Because there is currently little operational reliance on IPv6 Extension headers, the corresponding code paths are rarely exercised, and there is the potential that bugs still remain to be discovered in some implementations.</t>
 
-<t>Besides the general implications of IPv6 Extension Headers, each Extension Header tends to its own specific implications. One particular case is that of the Fragment Header, which is employed to provide the fragmentation function in IPv6. While many of the security implications of the fragmentation/reassembly mechanism are known from the IPv4 world, many of the related issues have crept into IPv6 implementations. They range from Denial of Service attacks to information leakage (see e.g. <xref target="I-D.ietf-6man-predictable-fragment-id"/>, <xref target="Bonica-NANOG58"/>, <xref target="Atlasis2012"/>).
+<t>IPv6 Fragment Headers are employed to allow fragmentation of IPv6 packets. While many of the security implications of the fragmentation / reassembly mechanism are known from the IPv4 world, several related issues have crept into IPv6 implementations. These range from denial of service attacks to information leakage, for example <xref target="I-D.ietf-6man-predictable-fragment-id"/>, <xref target="Bonica-NANOG58"/> and <xref target="Atlasis2012"/>).
 </t>
 </section>
 
 <section title="Operational Implications" anchor="operational-implications">
-<t>There are a number of reasons for which an intermediate system may need to process the entire IPv6 extension header chain to find the layer-4 header. Namely:
+<t>Intermediate systems and middleboxes often need to process the entire IPv6 extension header chain to find the layer-4 header.  There are several reasons for this, including:
 
 <list style="symbols">
 <t>Enforcing infrastructure ACLs</t>
 <t>DDoS management</t>
-<t>ECMP or other load-balancing implementation based on a hash of the four-tuple (src addr, dst addr, src port, dst port)</t>
+<t>ECMP or other load-balancing implementation based on N-tuple hashes which include higher layer protocol information (e.g. TCP or UDP port numbers)</t>
 <t>Customer requests for filtering</t>
 <t>Implementation of edge-to-core customer sanitisation filters</t>
 <t>Route-processor protection</t>
@@ -153,7 +160,7 @@ This document tries raise awareness about the security and operational implicati
 
 <section title="A possible attack vector" anchor="possible-attack-vector">
 <t>
-The widespread drop of IPv6 packets employing IPv6 Extension Headers can, in some scenarios, be exploited for malicious purposes: if packets employing IPv6 EHs are known to be dropped on the path from one system (say, "A") to another (say, "B"), an attacker could cause packets sent from A to B to be dropped by sending a forged ICMPv6 Packet Too Big (PTB) <xref target="RFC4443"/> error message to A (with a Next-Hop MTU smaller than 1280), such that subsequent packets from A to B include a fragment header (i.e., they result in atomic fragments <xref target="RFC6946"/>). 
+The widespread drop of IPv6 packets employing IPv6 Extension Headers can, in some scenarios, be exploited for malicious purposes: if packets employing IPv6 EHs are known to be dropped on the path from system A to system Big, an attacker could cause packets sent from A to B to be dropped by sending a forged ICMPv6 Packet Too Big (PTB) <xref target="RFC4443"/> error message to A (with a Next-Hop MTU smaller than 1280), such that subsequent packets from A to B include a fragment header (i.e., they result in atomic fragments <xref target="RFC6946"/>). 
 </t>
 
 <t>Possible scenarios where this attack vector could be exploited include (but are not limited to):
@@ -168,15 +175,15 @@ The widespread drop of IPv6 packets employing IPv6 Extension Headers can, in som
 <list style="symbols">
 <t>The attacker does not need to forge the IPv6 Source Address of his attack packets. Hence, deployment of simple BCP38 filters will not help as a counter-measure.</t>
 
-<t>Only the IPv6 addresses of the IPv6 packet embedded in the ICMPv6 payload need to be forged. While one could envision filtering devices enforcing BCP38-style filters on the ICMPv6 payload, the use of extension (by the attacker) could make this difficult, if at all possible.</t>
+<t>Only the IPv6 addresses of the IPv6 packet embedded in the ICMPv6 payload need to be forged. While one could envision filtering devices enforcing BCP38-style filters on the ICMPv6 payload, the use of extension headers (by the attacker) could make this difficult, if not impossible.</t>
 
 <t>Many implementations fail to perform validation checks on the received ICMPv6 error messages, as recommended in Section 5.2 of <xref target="RFC4443"/> and documented in <xref target="RFC5927"/>. It should be noted that in some cases, such as when an ICMPv6 error message has (supposedly) been elicited by a connection-less transport protocol (or some other connection-less protocol being encapsulated in IPv6), it may be virtually impossible to perform validation checks on the received ICMPv6 error messages. And, because of IPv6 extension headers, the ICMPv6 payload might not even contain any useful information on which to perform validation checks.</t>
 
-<t>Upon receipt of one of the aforementioned ICMPv6 "Packet Too Big" error messages, the Destination Cache <xref target="RFC4861"/> is usually updated to reflect that any subsequent packets to such destination should include a Fragment Header. This means that a single ICMPv6 "Packet Too Big" error message might affect multiple communication instances (e.g., TCP connections) with such destination.
+<t>Upon receipt of one of the aforementioned ICMPv6 "Packet Too Big" error messages, the Destination Cache <xref target="RFC4861"/> is usually updated to reflect that any subsequent packets to such destination should include a Fragment Header. This means that a single ICMPv6 "Packet Too Big" error message might affect multiple communication instances (e.g. TCP connections) with such destination.
 </t>
 
 <t>
-A node cannot simply "just drop all incoming ICMPv6 Packet Too Big error messages", or else it would create a PMTUD blackhole.
+A router or other middlebox cannot simply drop all incoming ICMPv6 Packet Too Big error messages, as this would create a PMTUD blackhole.
 </t>
 </list>
 </t>
@@ -205,7 +212,7 @@ Filtering only those ICMPv6 PTB messages that advertise a Next-Hop MTU smaller t
 
     <section title="Security Considerations">
 
-<t>The security implications of IPv6 extension headers are discussed in <xref target="security-implications"/>. A specific attack vector that would leverage the widespread filtering of packets with IPv6 EHs (along with possible countermeasures) is discussed in <xref target="possible-attack-vector"/>. This document does not introduce any new security issues.
+<t>The security implications of IPv6 extension headers are discussed in <xref target="security-implications"/>. A specific attack vector that could leverage the widespread filtering of packets with IPv6 EHs (along with possible countermeasures) is discussed in <xref target="possible-attack-vector"/>. This document does not introduce any new security issues.
 </t>
     </section>
 
@@ -357,13 +364,26 @@ Filtering only those ICMPv6 PTB messages that advertise a Next-Hop MTU smaller t
 
 
 <!--
-    <reference anchor="Cisco-Frag" target="http://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20130925-ipv6vfr">
+    <reference anchor="Cisco-Frag1" target="http://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20130925-ipv6vfr">
   <front>
   <title>Cisco IOS Software IPv6 Virtual Fragmentation Reassembly Denial of Service Vulnerability</title>
   <author initials="" surname="Cisco" fullname="Cisco">
 				<organization></organization>
   </author>
   <date month="September" year="2013"/>
+  </front>
+
+  </reference>
+-->
+
+<!--
+    <reference anchor="Cisco-Frag2" target="http://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20150611-iosxr">
+  <front>
+  <title>sco IOS XR Software Crafted IPv6 Packet Denial of Service Vulnerability</title>
+  <author initials="" surname="Cisco" fullname="Cisco">
+				<organization></organization>
+  </author>
+  <date month="June" year="2015"/>
   </front>
 
   </reference>
