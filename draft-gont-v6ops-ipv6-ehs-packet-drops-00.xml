@@ -32,6 +32,18 @@
       </address>
     </author>
 
+    <author initials="N" surname="Hilliard" fullname="Nick Hilliard">
+      <organization>INEX</organization>
+      <address>
+        <postal>
+          <street>4027 Kingswood Road</street>
+          <city>Dublin</city>
+          <code>24</code>
+          <country>IE</country>
+        </postal>
+        <email>nick@inex.ie</email>
+      </address>
+    </author>
 
     <author fullname="Steinar Haug" initials="S." surname="Haug">
       <organization abbrev="Broadnet">Broadnet</organization>
@@ -60,18 +72,6 @@
       </address>
     </author>
 
-    <author initials="N" surname="Hilliard" fullname="Nick Hilliard">
-      <organization>INEX</organization>
-      <address>
-        <postal>
-          <street>4027 Kingswood Road</street>
-          <city>Dublin</city>
-          <code>24</code>
-          <country>IE</country>
-        </postal>
-        <email>nick@inex.ie</email>
-      </address>
-    </author>
 
     <date year="2015" />
 
