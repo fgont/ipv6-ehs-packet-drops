@@ -80,7 +80,7 @@
 
     <abstract>
     <t>
-This document summarizes the security, performance, and operational implications of IPv6 extension headers, and attempts to analyze reasons why packets with IPv6 extension headers may be dropped in the public Internet.
+This document summarizes the security and operational implications of IPv6 extension headers, and attempts to analyze reasons why packets with IPv6 extension headers may be dropped in the public Internet.
 </t>
     </abstract>
   </front>
@@ -99,7 +99,7 @@ This document tries to raise awareness about the security and operational implic
 </t>
 
 <t>
-<xref target="previous-work"/> of this document summarizes the work that has been done in the area of IPv6 extension headers. <xref target="performance-implications"/> discusses the performance implications of IPv6 Extension Headers, while <xref target="operational-implications"/> and <xref target="security-implications"/> discuss their operational and security implications, respectively.
+<xref target="previous-work"/> of this document summarizes the work that has been done in the area of IPv6 extension headers. <xref target="security-implications"/> discusses the security implications of IPv6 Extension Headers, while <xref target="operational-implications"/> discusses their operational implications.
 </t>
 </section>
 
@@ -110,6 +110,7 @@ This document tries to raise awareness about the security and operational implic
 </section>
 
 
+<!--
 <section title="Performance Implications" anchor="performance-implications">
 <t>FIXME:  Some IPv6 router implementations suffer from a negative performance impact when IPv6 Extension Headers are employed.</t>
 
@@ -119,6 +120,7 @@ This document tries to raise awareness about the security and operational implic
 
 <t>We note that, for obvious reasons, the aforementioned performance issues may also affect other devices such as firewalls, Network Intrusion Detection Systems (NIDS), etc. <xref target="Zack-FW-Benchmark"/>.</t>
 </section>
+-->
 
 <section title="Security Implications" anchor="security-implications">
 <t>The security implications of IPv6 Extension Headers generally fall into one or more of these categories:
@@ -134,6 +136,10 @@ This document tries to raise awareness about the security and operational implic
 </t>
 
 <t>FIXME: As noted in <xref target="operational-implications"/>, packets that use IPv6 Extension Headers may have a negative performance impact on the handling devices. Unless appropriate mitigations are put in place (e.g., packet filtering and/or rate-limiting), an attacker could simply send a large amount of IPv6 traffic employing IPv6 Extension Headers with the purpose of performing a Denial of Service (DoS) attack.
+<list style="hanging">
+<t>NOTE: In the most trivial case, a packet that includes a Hop-by-Hop Options header will typically go through the slow forwarding path, and be processed by the router's CPU. An implementation-dependent case might be that in which a router that has been configured to enforce an ACL based on upper-layer information (e.g., upper layer protocol or TCP Destination Port), needs to process the entire IPv6 header chain (in order to find the required information) and this causes the packet to be processed in the slow path <xref target="Cisco-EH-Cons"/>. We note that, for obvious reasons, the aforementioned performance issues may also affect other devices such as firewalls, Network Intrusion Detection Systems (NIDS), etc. <xref target="Zack-FW-Benchmark"/>. The extent to which these devices are affected will typically be implementation-dependent.
+</t>
+</list>
 </t>
 
 <t>IPv6 implementations, like all other software, tend to mature with time and wide-scale deployment. While the IPv6 protocol itself has existed for almost 20 years, serious bugs related to IPv6 Extension Header processing continue to be found<!-- (see e.g. <xref target="Cisco-Frag1"/> and <xref target="Cisco-Frag2"/>)-->.  Because there is currently little operational reliance on IPv6 Extension headers, the corresponding code paths are rarely exercised, and there is the potential that bugs still remain to be discovered in some implementations.</t>
