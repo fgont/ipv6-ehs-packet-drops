@@ -71,16 +71,21 @@
       </address>
     </author>
 
-    <author fullname="Steinar Haug" initials="S." surname="Haug">
-      <organization abbrev="Broadnet">Broadnet</organization>
+    <author fullname="Warren Kumari" initials="W." surname="Kumari">
+      <organization>Google</organization>
 
       <address>
         <postal>
-          <street>Rolfsbuktveien 4C</street>
-          <code>1364</code>
-          <city>Fornebu</city>
-          <country>Norway</country>
+          <street>1600 Amphitheatre Parkway</street>
+
+          <city>Mountain View, CA</city>
+
+          <code>94043</code>
+
+          <country>US</country>
         </postal>
+
+        <email>warren@kumari.net</email>
       </address>
     </author>
 
