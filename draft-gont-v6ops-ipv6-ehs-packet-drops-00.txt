@@ -5,14 +5,14 @@
 IPv6 Operations Working Group (v6ops)                            F. Gont
 Internet-Draft                                    SI6 Networks / UTN-FRH
 Intended status: Informational                               N. Hilliard
-Expires: January 1, 2016                                            INEX
+Expires: January 2, 2016                                            INEX
                                                               G. Doering
                                                              SpaceNet AG
                                                                   W. Liu
                                                      Huawei Technologies
                                                                W. Kumari
                                                                   Google
-                                                           June 30, 2015
+                                                            July 1, 2015
 
 
     Operational Implications of IPv6 Packets with Extension Headers
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 1, 2016.
+   This Internet-Draft will expire on January 2, 2016.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Gont, et al.             Expires January 1, 2016                [Page 1]
+Gont, et al.             Expires January 2, 2016                [Page 1]
 
-Internet-Draft           IPv6 Extension Headers                June 2015
+Internet-Draft           IPv6 Extension Headers                July 2015
 
 
    carefully, as they describe your rights and restrictions with respect
@@ -71,12 +71,12 @@ Table of Contents
    3.  Security Implications . . . . . . . . . . . . . . . . . . . .   3
    4.  Operational Implications  . . . . . . . . . . . . . . . . . .   5
      4.1.  Enforcing infrastructure ACLs . . . . . . . . . . . . . .   5
-     4.2.  Route-processor protection  . . . . . . . . . . . . . . .   5
-     4.3.  DDoS management and Customer Requests for Filtering . . .   5
-     4.4.  ECMP and Hash-based Load-Balancing  . . . . . . . . . . .   6
+     4.2.  Route-Processor Protection  . . . . . . . . . . . . . . .   5
+     4.3.  DDoS Management and Customer Requests for Filtering . . .   5
+     4.4.  ECMP and Hash-based Load-Sharing  . . . . . . . . . . . .   6
      4.5.  Packet Forwarding Engine Constraints  . . . . . . . . . .   6
-   5.  A possible attack vector  . . . . . . . . . . . . . . . . . .   7
-   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
+   5.  A Possible Attack Vector  . . . . . . . . . . . . . . . . . .   7
+   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
    8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   9
    9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Gont, et al.             Expires January 1, 2016                [Page 2]
+Gont, et al.             Expires January 2, 2016                [Page 2]
 
-Internet-Draft           IPv6 Extension Headers                June 2015
+Internet-Draft           IPv6 Extension Headers                July 2015
 
 
    implications of IPv6 Extension Headers, while Section 4 discusses
@@ -131,12 +131,13 @@ Internet-Draft           IPv6 Extension Headers                June 2015
    inconsistencies in the way IPv6 packets with extension headers are
    parsed by different implementations may result in evasion of security
    controls, and presents guidelines for parsing IPv6 extension headers
-   with a goal of providing a common and consistent parsing methodology
-   for IPv6 implementations.  [RFC6980] analyzes the security
-   implications of employing IPv6 fragmentation with Neighbor Discovery
-   for IPv6, and formally recommends against such usage.  Finally,
-   [RFC7123] discusses how some popular RA-Guard implementations are
-   subject to evasion by means of IPv6 extension headers.
+   with the goal of providing a common and consistent parsing
+   methodology for IPv6 implementations.  [RFC6980] analyzes the
+   security implications of employing IPv6 fragmentation with Neighbor
+   Discovery for IPv6, and formally recommends against such usage.
+   Finally, [RFC7123] discusses how some popular RA-Guard
+   implementations are subject to evasion by means of IPv6 extension
+   headers.
 
    Some preliminary measurements regarding the extent to which packet
    containing IPv6 EHs are dropped in the public Internet have been
@@ -158,34 +159,35 @@ Internet-Draft           IPv6 Extension Headers                June 2015
 
    o  Extension Header-specific issues
 
-   Unlike IPv4 headers which are fixed-length and where the upper-layer
-   protocols can be deterministically found at fixed offsets, the
-   structure of IPv6 packets is more flexible and complex.  Locating
-   upper-layer protocol information requires that all IPv6 extension
+   Unlike IPv4 packets where the upper-layer protocols can be trivially
+   found by means of the "IHL" ("Internet Header Length") IPv4 header
+   field, the structure of IPv6 packets is more flexible and complex.
 
 
 
-Gont, et al.             Expires January 1, 2016                [Page 3]
+Gont, et al.             Expires January 2, 2016                [Page 3]
 
-Internet-Draft           IPv6 Extension Headers                June 2015
+Internet-Draft           IPv6 Extension Headers                July 2015
 
 
-   header be examined.  This has presented implementation difficulties,
-   and packet filtering mechanisms on several security devices can be
-   trivially evaded by inserting IPv6 Extension Headers between the main
-   IPv6 header and the upper layer protocol.  [RFC7113] describes this
-   issue for the RA-Guard case, but the same techniques can be deployed
-   to circumvent other IPv6 firewall and packet filtering mechanisms.
-   Additionally, implementation inconsistencies in packet forwarding
-   engines may result in evasion of security controls
-   [I-D.kampanakis-6man-ipv6-eh-parsing] [Atlasis2014] [BH-EU-2014].
+   Locating upper-layer protocol information requires that all IPv6
+   extension headers be examined.  This has presented implementation
+   difficulties, and packet filtering mechanisms on several security
+   devices can be trivially evaded by inserting IPv6 Extension Headers
+   between the main IPv6 header and the upper layer protocol.  [RFC7113]
+   describes this issue for the RA-Guard case, but the same techniques
+   can be employed to circumvent other IPv6 firewall and packet
+   filtering mechanisms.  Additionally, implementation inconsistencies
+   in packet forwarding engines may result in evasion of security
+   controls [I-D.kampanakis-6man-ipv6-eh-parsing] [Atlasis2014]
+   [BH-EU-2014].
 
-   FIXME: As noted in Section 4, packets that use IPv6 Extension Headers
-   may have a negative performance impact on the handling devices.
-   Unless appropriate mitigations are put in place (e.g., packet
-   filtering and/or rate-limiting), an attacker could simply send a
-   large amount of IPv6 traffic employing IPv6 Extension Headers with
-   the purpose of performing a Denial of Service (DoS) attack.
+   As noted in Section 4, packets that use IPv6 Extension Headers may
+   have a negative performance impact on the handling devices.  Unless
+   appropriate mitigations are put in place (e.g., packet filtering and/
+   or rate-limiting), an attacker could simply send a large amount of
+   IPv6 traffic employing IPv6 Extension Headers with the purpose of
+   performing a Denial of Service (DoS) attack.
 
       NOTE: In the most trivial case, a packet that includes a Hop-by-
       Hop Options header will typically go through the slow forwarding
@@ -205,8 +207,8 @@ Internet-Draft           IPv6 Extension Headers                June 2015
    IPv6 implementations, like all other software, tend to mature with
    time and wide-scale deployment.  While the IPv6 protocol itself has
    existed for almost 20 years, serious bugs related to IPv6 Extension
-   Header processing continue to be found.  Because there is currently
-   little operational reliance on IPv6 Extension headers, the
+   Header processing continue to be discovered.  Because there is
+   currently little operational reliance on IPv6 Extension headers, the
    corresponding code paths are rarely exercised, and there is the
    potential that bugs still remain to be discovered in some
    implementations.
@@ -216,23 +218,25 @@ Internet-Draft           IPv6 Extension Headers                June 2015
    fragmentation / reassembly mechanism are known from the IPv4 world,
    several related issues have crept into IPv6 implementations.  These
    range from denial of service attacks to information leakage, for
+
+
+
+Gont, et al.             Expires January 2, 2016                [Page 4]
+
+Internet-Draft           IPv6 Extension Headers                July 2015
+
+
    example [I-D.ietf-6man-predictable-fragment-id], [Bonica-NANOG58] and
    [Atlasis2012]).
-
-
-
-Gont, et al.             Expires January 1, 2016                [Page 4]
-
-Internet-Draft           IPv6 Extension Headers                June 2015
-
 
 4.  Operational Implications
 
    Intermediate systems and middleboxes often need to process the entire
-   IPv6 extension header chain to find the layer-4 header.  There can be
-   many reasons for this.
-
-   FIXME: Implementation of edge-to-core customer sanitisation filters
+   IPv6 extension header chain to find the layer-4 header.  The
+   following subsections discuss some of reasons for which such layer-4
+   information may be needed by an intermediate systems or middlebox,
+   and why packets containing IPv6 extension headers may represent a
+   challenge in such scenarios.
 
 4.1.  Enforcing infrastructure ACLs
 
@@ -241,7 +245,7 @@ Internet-Draft           IPv6 Extension Headers                June 2015
    not operationally needed and can be used for attacks of different
    sorts against the router's control plane.  Some traffic needs to be
    differentiated depending on layer-3 or layer-4 criteria to achieve a
-   useful balance of protection of funcationality, for example:
+   useful balance of protection and functionality, for example:
 
    o  Permit some amount of ICMP echo (ping) traffic towards the
       router's addresses for troubleshooting.
@@ -251,7 +255,7 @@ Internet-Draft           IPv6 Extension Headers                June 2015
       permitted for established sessions and connection establishment),
       but do not permit other traffic from the same peer IP addresses.
 
-4.2.  Route-processor protection
+4.2.  Route-Processor Protection
 
    Most modern routers have a fast hardware-assisted forwarding plane
    and a loosely coupled control plane, connected together with a link
@@ -260,28 +264,28 @@ Internet-Draft           IPv6 Extension Headers                June 2015
    because this would overload the internal link connecting the
    forwarding plane to the control plane.
 
-4.3.  DDoS management and Customer Requests for Filtering
+4.3.  DDoS Management and Customer Requests for Filtering
 
    The case of customer DDoS protection and edge-to-core customer
    protection filters is similar in nature to the infrastructure ACL
-   protection.  Similar to iACL protectop, layer 4 ACLs generally need
-   to be applied as close the edge of the network as possible, even
+   protection.  Similar to iACL protection, layer-4 ACLs generally need
+   to be applied as close to the edge of the network as possible, even
    though the intent is to protect the customer edge rather than the
-   provider core.  Application of layer 4 DDoS protection to a network
-   edge is often automated using [RFC5575] Flowspec.
+   provider core.  Application of layer-4 DDoS protection to a network
+   edge is often automated using Flowspec [RFC5575].
+
+
+
+
+Gont, et al.             Expires January 2, 2016                [Page 5]
+
+Internet-Draft           IPv6 Extension Headers                July 2015
+
 
    For example, a web site which normally only handled traffic on TCP
    ports 80 and 443 could be subject to a volumetric DDoS attack using
    NTP and DNS packets with randomised source IP address, thereby
    rendering useless traditional [RFC5635] source-based real-time black
-
-
-
-Gont, et al.             Expires January 1, 2016                [Page 5]
-
-Internet-Draft           IPv6 Extension Headers                June 2015
-
-
    hole mechanisms.  In this situation, DDoS protection ACLs could be
    configured to block all UDP traffic at the network edge without
    impairing the web server functionality in any way.  Thus, being able
@@ -289,20 +293,21 @@ Internet-Draft           IPv6 Extension Headers                June 2015
    related problems both in the provider network and on the customer
    edge link.
 
-4.4.  ECMP and Hash-based Load-Balancing
+4.4.  ECMP and Hash-based Load-Sharing
 
    In the case of ECMP (equal cost multi path) load sharing, the router
-   on the sending side of the link needs to make a decision which of the
-   links to use for a given packet.  Since round-robin usage of the
-   links is usually avoided in order to prevent packet reordering,
-   forwarding engines need to use a mechanism which will consistently
-   forward the same data streams down the same forwarding paths.  Most
-   forwarding engines achieve this by calculating a simple hash using an
-   n-tuple gleaned from a combination of layer 2 through to layer 4
-   packet header information.  This n-tuple will typically use the src/
-   dst MAC address, src/dst IP address, and if possible further layer-4
-   src/dst port information.  As layer 4 port information increases the
-   entropy of the hash, it is highly desirable to use it where possible.
+   on the sending side of the link needs to make a decision regarding
+   which of the links to use for a given packet.  Since round-robin
+   usage of the links is usually avoided in order to prevent packet
+   reordering, forwarding engines need to use a mechanism which will
+   consistently forward the same data streams down the same forwarding
+   paths.  Most forwarding engines achieve this by calculating a simple
+   hash using an n-tuple gleaned from a combination of layer-2 through
+   to layer-4 packet header information.  This n-tuple will typically
+   use the src/dst MAC address, src/dst IP address, and if possible
+   further layer-4 src/dst port information.  As layer-4 port
+   information increases the entropy of the hash, it is highly desirable
+   to use it where possible.
 
 4.5.  Packet Forwarding Engine Constraints
 
@@ -320,34 +325,34 @@ Internet-Draft           IPv6 Extension Headers                June 2015
    lookup engine may not be able to inspect far enough into a packet to
    determine how it should be handled.
 
-   FIXME: consider whether to name specific models here: Current high-
-   end routers at the time of authorship of this document can use up to
-   192 bytes of header (Cisco ASR9000 Typhoon) or 384 bytes of header
-   (Juniper MX Trio)
+      Note: For example, current high-end routers at the time of
+      authorship of this document can use up to 192 bytes of header
+      (Cisco ASR9000 Typhoon) or 384 bytes of header (Juniper MX Trio)
+
+
+
+
+
+Gont, et al.             Expires January 2, 2016                [Page 6]
+
+Internet-Draft           IPv6 Extension Headers                July 2015
+
 
    If a hardware forwarding engine on a modern router cannot make a
    forwarding decision about a packet because critical information is
    not sent to the look-up engine, then the router will normally drop
    the packet.  Historically, some packet forwarding engines punted
-   packets of this form to the control plane for more indepth analysis,
-
-
-
-Gont, et al.             Expires January 1, 2016                [Page 6]
-
-Internet-Draft           IPv6 Extension Headers                June 2015
-
-
-   but this is unfeasible on most current router architectures to the
-   vast difference between the hardware forwarding capacity of the
-   router and the size of the management link which connects the control
-   plane to the forwarding plane.
+   packets of this form to the control plane for more in-depth analysis,
+   but this is unfeasible on most current router architectures as a
+   result of the vast difference between the hardware forwarding
+   capacity of the router and the size of the management link which
+   connects the control plane to the forwarding plane.
 
    If an IPv6 header chain is sufficiently long that its header exceeds
-   the packet lookup capacity of the router, then it may be dropped due
+   the packet look-up capacity of the router, then it may be dropped due
    to hardware inability to determine how it should be handled.
 
-5.  A possible attack vector
+5.  A Possible Attack Vector
 
    The widespread drop of IPv6 packets employing IPv6 Extension Headers
    can, in some scenarios, be exploited for malicious purposes: if
@@ -380,20 +385,21 @@ Internet-Draft           IPv6 Extension Headers                June 2015
    o  Only the IPv6 addresses of the IPv6 packet embedded in the ICMPv6
       payload need to be forged.  While one could envision filtering
       devices enforcing BCP38-style filters on the ICMPv6 payload, the
+
+
+
+
+Gont, et al.             Expires January 2, 2016                [Page 7]
+
+Internet-Draft           IPv6 Extension Headers                July 2015
+
+
       use of extension headers (by the attacker) could make this
       difficult, if not impossible.
 
    o  Many implementations fail to perform validation checks on the
       received ICMPv6 error messages, as recommended in Section 5.2 of
       [RFC4443] and documented in [RFC5927].  It should be noted that in
-
-
-
-Gont, et al.             Expires January 1, 2016                [Page 7]
-
-Internet-Draft           IPv6 Extension Headers                June 2015
-
-
       some cases, such as when an ICMPv6 error message has (supposedly)
       been elicited by a connection-less transport protocol (or some
       other connection-less protocol being encapsulated in IPv6), it may
@@ -433,22 +439,22 @@ Internet-Draft           IPv6 Extension Headers                June 2015
    Thus, any of the above mitigations would eliminate the attack vector
    without any interoperability implications.
 
+
+
+
+
+
+
+Gont, et al.             Expires January 2, 2016                [Page 8]
+
+Internet-Draft           IPv6 Extension Headers                July 2015
+
+
 6.  IANA Considerations
 
    There are no IANA registries within this document.  The RFC-Editor
    can remove this section before publication of this document as an
    RFC.
-
-
-
-
-
-
-
-Gont, et al.             Expires January 1, 2016                [Page 8]
-
-Internet-Draft           IPv6 Extension Headers                June 2015
-
 
 7.  Security Considerations
 
@@ -491,20 +497,17 @@ Internet-Draft           IPv6 Extension Headers                June 2015
    [RFC6145]  Li, X., Bao, C., and F. Baker, "IP/ICMP Translation
               Algorithm", RFC 6145, April 2011.
 
+
+
+
+
+Gont, et al.             Expires January 2, 2016                [Page 9]
+
+Internet-Draft           IPv6 Extension Headers                July 2015
+
+
    [RFC6946]  Gont, F., "Processing of IPv6 "Atomic" Fragments", RFC
               6946, May 2013.
-
-
-
-
-
-
-
-
-Gont, et al.             Expires January 1, 2016                [Page 9]
-
-Internet-Draft           IPv6 Extension Headers                June 2015
-
 
 9.2.  Informative References
 
@@ -554,12 +557,9 @@ Internet-Draft           IPv6 Extension Headers                June 2015
 
 
 
-
-
-
-Gont, et al.             Expires January 1, 2016               [Page 10]
+Gont, et al.             Expires January 2, 2016               [Page 10]
 
-Internet-Draft           IPv6 Extension Headers                June 2015
+Internet-Draft           IPv6 Extension Headers                July 2015
 
 
    [I-D.ietf-6man-deprecate-atomfrag-generation]
@@ -613,9 +613,9 @@ Internet-Draft           IPv6 Extension Headers                June 2015
 
 
 
-Gont, et al.             Expires January 1, 2016               [Page 11]
+Gont, et al.             Expires January 2, 2016               [Page 11]
 
-Internet-Draft           IPv6 Extension Headers                June 2015
+Internet-Draft           IPv6 Extension Headers                July 2015
 
 
    [RFC5575]  Marques, P., Sheth, N., Raszuk, R., Greene, B., Mauch, J.,
@@ -669,9 +669,9 @@ Authors' Addresses
 
 
 
-Gont, et al.             Expires January 1, 2016               [Page 12]
+Gont, et al.             Expires January 2, 2016               [Page 12]
 
-Internet-Draft           IPv6 Extension Headers                June 2015
+Internet-Draft           IPv6 Extension Headers                July 2015
 
 
    Nick Hilliard
@@ -725,4 +725,4 @@ Internet-Draft           IPv6 Extension Headers                June 2015
 
 
 
-Gont, et al.             Expires January 1, 2016               [Page 13]
+Gont, et al.             Expires January 2, 2016               [Page 13]
