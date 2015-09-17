@@ -156,7 +156,7 @@ This document tries to raise awareness about the security and operational implic
 
 <!-- [fgont]  The following paragraph was tagged with "FIXME:". Not sure if there's still stuff to fix here... But I leave this note as a reminder to all of us :-) 
 -->
-<t>As noted in <xref target="operational-implications"/>, packets that use IPv6 Extension Headers may have a negative performance impact on the handling devices. Unless appropriate mitigations are put in place (e.g., packet filtering and/or rate-limiting), an attacker could simply send a large amount of IPv6 traffic employing IPv6 Extension Headers with the purpose of performing a Denial of Service (DoS) attack.
+<t>As noted in <xref target="operational-implications"/>, packets that use IPv6 Extension Headers may have a negative performance impact on the handling devices. Unless appropriate mitigations are put in place (e.g., packet dropping and/or rate-limiting), an attacker could simply send a large amount of IPv6 traffic employing IPv6 Extension Headers with the purpose of performing a Denial of Service (DoS) attack.
 <list style="hanging">
 <t>NOTE: In the most trivial case, a packet that includes a Hop-by-Hop Options header will typically go through the slow forwarding path, and be processed by the router's CPU. An implementation-dependent case might be that in which a router that has been configured to enforce an ACL based on upper-layer information (e.g., upper layer protocol or TCP Destination Port), needs to process the entire IPv6 header chain (in order to find the required information) and this causes the packet to be processed in the slow path <xref target="Cisco-EH-Cons"/>. We note that, for obvious reasons, the aforementioned performance issues may also affect other devices such as firewalls, Network Intrusion Detection Systems (NIDS), etc. <xref target="Zack-FW-Benchmark"/>. The extent to which these devices are affected will typically be implementation-dependent.
 </t>
@@ -219,7 +219,7 @@ packets with randomised source IP address, thereby rendering useless
 traditional <xref target="RFC5635"/> source-based real-time black hole
 mechanisms.  In this situation, DDoS protection ACLs could be configured to
 block all UDP traffic at the network edge without impairing the web server
-functionality in any way.  Thus, being able to filter out arbitrary
+functionality in any way.  Thus, being able to block arbitrary
 protocols at the network edge can avoid DDoS-related problems both in the provider
 network and on the customer edge link.
 </t>
@@ -325,8 +325,8 @@ A router or other middlebox cannot simply drop all incoming ICMPv6 Packet Too Bi
 
 <t>Possible mitigations for this issue include:
 <list style="symbols">
-<t>Filtering incoming ICMPv6 Packet Too Big error messages that advertise a Next-Hop MTU smaller than 1280 bytes.</t>
-<t>Artificially reducing the MTU to 1280 bytes and filter incoming ICMPv6 PTB error messages.</t>
+<t>Dropping incoming ICMPv6 Packet Too Big error messages that advertise a Next-Hop MTU smaller than 1280 bytes.</t>
+<t>Artificially reducing the MTU to 1280 bytes and dropping incoming ICMPv6 PTB error messages.</t>
 </list>
 </t>
 
@@ -345,7 +345,7 @@ Filtering only those ICMPv6 PTB messages that advertise a Next-Hop MTU smaller t
 
     <section title="Security Considerations">
 
-<t>The security implications of IPv6 extension headers are discussed in <xref target="security-implications"/>. A specific attack vector that could leverage the widespread filtering of packets with IPv6 EHs (along with possible countermeasures) is discussed in <xref target="possible-attack-vector"/>. This document does not introduce any new security issues.
+<t>The security implications of IPv6 extension headers are discussed in <xref target="security-implications"/>. A specific attack vector that could leverage the widespread dropping of packets with IPv6 EHs (along with possible countermeasures) is discussed in <xref target="possible-attack-vector"/>. This document does not introduce any new security issues.
 </t>
     </section>
 
