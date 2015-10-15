@@ -3,6 +3,9 @@
 ]>
 <?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?>
 <?rfc toc="yes" ?>
+<?rfc toc="yes"?>
+<?rfc tocompact="yes"?>
+<?rfc tocdepth="2"?>
 <?rfc symrefs="yes" ?>
 <?rfc sortrefs="yes"?>
 <?rfc strict="no" ?>
@@ -106,7 +109,7 @@ This document summarizes the security and operational implications of IPv6 exten
 
 <section title="Introduction" anchor="intro"> 
 <t>
-IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and provide support for core functionality such as IPv6 fragmentation. However, widespread implementation limitations suggest that EHs present a challenge for IPv6 packet routing equipment, and evidence exists to suggest that IPv6 with EHs may be intentionally dropped on the public Internet in some network deployments.
+IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and provide support for core functionality such as IPv6 fragmentation. However, common implementation limitations suggest that EHs present a challenge for IPv6 packet routing equipment, and evidence exists to suggest that IPv6 packets with EHs may be intentionally dropped on the public Internet in some network deployments.
 </t>
 
 <t>Discussions about the security and operational implications of IPv6 extension headers are a regular feature in IETF working groups and other places.  Often in these discussions, important security and operational issues are overlooked.</t>
@@ -170,7 +173,6 @@ This document tries to raise awareness about the security and operational implic
 </section>
 
 <section title="Operational Implications" anchor="operational-implications">
-<t>Intermediate systems and middleboxes often need to process the entire IPv6 extension header chain to find the layer-4 header.  The following subsections discuss some of reasons for which such layer-4 information may be needed by an intermediate systems or middlebox, and why packets containing IPv6 extension headers may represent a challenge in such scenarios.</t>
 
 <!-- 
 [fgont] Isn't this already discussed in the "ddos-management" section?
@@ -178,6 +180,10 @@ This document tries to raise awareness about the security and operational implic
 <t>FIXME: Implementation of edge-to-core customer sanitisation filters</t>
 
 -->
+
+<section title="Requirement to process required layer-3/layer-4 information" anchor="inability">
+
+<t>Intermediate systems and middleboxes often need to process the entire IPv6 extension header chain to find the layer-4 header.  When such devices are unable to obtain the required information, they may simply drop the corresponding packets. The following subsections discuss some of reasons for which such layer-4 information may be needed by an intermediate systems or middlebox, and why packets containing IPv6 extension headers may represent a challenge in such scenarios.</t>
 
 <section title="Enforcing infrastructure ACLs" anchor="enforcing-infrastructure-acls">
 
@@ -191,16 +197,6 @@ or layer-4 criteria to achieve a useful balance of protection and functionality,
  addresses for troubleshooting.</t>
  <t>Permit BGP sessions on the shared network of an exchange point (potentially differentiating between the amount of packets/seconds permitted for established sessions and connection establishment), but do not permit other traffic from the same peer IP addresses.</t>
 </list>
-</t>
-</section>
-
-<section title="Route-Processor Protection" anchor="route-processor-protection">
-<t>Most modern routers have a fast hardware-assisted forwarding plane
-and a loosely coupled control plane, connected together with a link that
-has much less capacity than the forwarding plane could handle.  Traffic
-differentiation cannot be done by the control plane side, because this would
-overload the internal link connecting the forwarding plane to the control
-plane.
 </t>
 </section>
 
@@ -291,6 +287,29 @@ inability to determine how it should be handled.
 
 </section>
 
+
+
+<section title="Route-Processor Protection" anchor="route-processor-protection">
+<t>Most modern routers have a fast hardware-assisted forwarding plane
+and a loosely coupled control plane, connected together with a link that
+has much less capacity than the forwarding plane could handle.  Traffic
+differentiation cannot be done by the control plane side, because this would
+overload the internal link connecting the forwarding plane to the control
+plane.
+</t>
+
+<t>The Hop-by-Hop Options header is particularly challenging since, in most (if not all) implementations, it causes the corresponding packet to be punted to a software path. As a result, operators usually drop IPv6 packets containing this extension header.</t>
+</section>
+
+
+<section title="Inability to Perform Fine-grained Filtering" anchor="finer-grained">
+<t>Some routers lack of fine-grained filtering of IPv6 extension headers. For example, an operator may want to drop packets containing Routing Header Type 0 (RHT0) but may only be able to filter on the extension header type (Routing Header). As a result, the operator may end up enforcing a more coarse filtering policy (e.g. "drop all packets containing a Routing Header" vs. "only drop packets that contain a Routing Header Type 0").
+</t>
+</section>
+
+
+</section>
+
 <section title="A Possible Attack Vector" anchor="possible-attack-vector">
 <t>
 The widespread drop of IPv6 packets employing IPv6 Extension Headers can, in some scenarios, be exploited for malicious purposes: if packets employing IPv6 EHs are known to be dropped on the path from system A to system B, an attacker could cause packets sent from A to B to be dropped by sending a forged ICMPv6 Packet Too Big (PTB) <xref target="RFC4443"/> error message to A (advertising an MTU smaller than 1280), such that subsequent packets from A to B include a fragment header (i.e., they result in atomic fragments <xref target="RFC6946"/>). 
@@ -330,7 +349,7 @@ A router or other middlebox cannot simply drop all incoming ICMPv6 Packet Too Bi
 </list>
 </t>
 
-<t>Both of these mitigations come at the expense of possibly preventing communication through SIIT <xref target="RFC6145"/> that rely on IPv6 atomic fragments (see <xref target="I-D.ietf-6man-deprecate-atomfrag-generation"/>), and also implies that the filtering device has the ability to filter ICMP PTB messages based on the contents of the MTU field.
+<t>Both of these mitigations come at the expense of possibly preventing communication through SIIT <xref target="RFC6145"/> that relies on IPv6 atomic fragments (see <xref target="I-D.ietf-6man-deprecate-atomfrag-generation"/>), and also implies that the filtering device has the ability to filter ICMP PTB messages based on the contents of the MTU field.
 <!--
 Filtering only those ICMPv6 PTB messages that advertise a Next-Hop MTU smaller than 1280 would prevent the generation of IPv6 atomic fragments without breaking Path-MTU Discovery. However, such filtering would require deep packet inspection, and such functionality (if at all desirable) might not be available.-->
 </t>
