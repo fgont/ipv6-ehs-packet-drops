@@ -202,7 +202,7 @@ IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and p
 Most modern routers use dedicated hardware (e.g.  ASICs or NPUs) to
 determine how to forward packets across their internal fabrics (see <xref target="IEPG94-Scudder"/> for details).  One of the
 common methods of handling next-hop lookup is to send a small portion of the
-ingress packet to a lookup engine with specialised hardware (e.g.  Tertiary
+ingress packet to a lookup engine with specialised hardware (e.g. ternary
 CAM or RLDRAM) to determine the packet's next-hop.  Technical constraints
 mean that there is a trade-off between the amount of data sent to the lookup
 engine and the overall performance of the lookup engine.  If more data is
