@@ -80,6 +80,14 @@
       </address>
     </author>
 
+   <author fullname="Geoff Huston" initials="G." surname="Huston">
+      <organization abbrev="APNIC"/>
+
+      <address>
+        <email>gih@apnic.net</email>
+        <uri>http://www.apnic.net</uri>
+      </address>
+    </author>
 
     <date/>
 
@@ -363,6 +371,8 @@ Filtering only those ICMPv6 PTB messages that advertise a Next-Hop MTU smaller t
 </section>
 
 <section title="Future Work" anchor="future-work">
+<t>[Draft note: Perhaps the underlying message that this situation is salvageable is perhaps the wrong message hre. We could just drop this section completely.]</t>
+
 <t>Based on the discussion provided in this document, we recommend the following (*non*-mutually exclusive) actions to improve the state of affairs of IPv6 extension headers:
 <list style="symbols">
 <t>Vendors must allow for better granularity in the specification of filters for IPv6 extension headers, such that filters for specific EH types and subtypes (e.g. RHT0 vs. RHT2) can be specified wthout affecting other extension header types/subtypes unnecessarily (please see <xref target="finer-grained"/>).</t>
