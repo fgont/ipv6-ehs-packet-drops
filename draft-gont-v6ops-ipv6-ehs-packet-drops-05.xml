@@ -1,0 +1,720 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+]>
+<?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?>
+<?rfc toc="yes" ?>
+<?rfc toc="yes"?>
+<?rfc tocompact="yes"?>
+<?rfc tocdepth="2"?>
+<?rfc symrefs="yes" ?>
+<?rfc sortrefs="yes"?>
+<?rfc strict="no" ?>
+
+<rfc 
+	ipr="trust200902"
+	category="info"
+	docName="draft-gont-v6ops-ipv6-ehs-packet-drops-05">
+  <front>
+    <title abbrev="IPv6 Extension Headers">Operational Implications of IPv6 Packets with Extension Headers</title>
+
+    <author fullname="Fernando Gont" initials="F." surname="Gont">
+
+      <organization abbrev="SI6 Networks">SI6 Networks</organization>
+      <address>
+        <postal>
+          <street>Segurola y Habana 4310, 7mo Piso</street>
+<!--          <code>1706</code> -->
+          <city>Villa Devoto</city>
+          <region>Ciudad Autonoma de Buenos Aires</region>
+          <country>Argentina</country>
+        </postal>
+<!--        <phone>+54 11 4650 8472</phone> -->
+        <email>fgont@si6networks.com</email>
+        <uri>https://www.si6networks.com</uri>
+       </address>
+    </author>
+
+    <author initials="N" surname="Hilliard" fullname="Nick Hilliard">
+      <organization>INEX</organization>
+      <address>
+        <postal>
+          <street>4027 Kingswood Road</street>
+          <city>Dublin</city>
+          <code>24</code>
+          <country>IE</country>
+        </postal>
+        <email>nick@inex.ie</email>
+      </address>
+    </author>
+
+    <author initials="G" surname="Doering" fullname="Gert Doering">
+      <organization>SpaceNet AG</organization>
+      <address>
+        <postal>
+          <street>Joseph-Dollinger-Bogen 14</street>
+          <city>Muenchen</city>
+          <code>D-80807</code>
+          <country>Germany</country>
+        </postal>
+        <email>gert@space.net</email>
+      </address>
+    </author>
+
+
+    <author fullname="Warren Kumari" initials="W." surname="Kumari">
+      <organization>Google</organization>
+
+      <address>
+        <postal>
+          <street>1600 Amphitheatre Parkway</street>
+
+          <city>Mountain View, CA</city>
+
+          <code>94043</code>
+
+          <country>US</country>
+        </postal>
+
+        <email>warren@kumari.net</email>
+      </address>
+    </author>
+
+   <author fullname="Geoff Huston" initials="G." surname="Huston">
+      <organization abbrev="APNIC"/>
+
+      <address>
+        <email>gih@apnic.net</email>
+        <uri>http://www.apnic.net</uri>
+      </address>
+    </author>
+
+
+
+    <date/>
+
+    <area>Operations and Management</area>
+    <workgroup>IPv6 Operations Working Group (v6ops)</workgroup>
+
+    <abstract>
+    <t>
+This document summarizes the security and operational implications of IPv6 extension headers, and attempts to analyze reasons why packets with IPv6 extension headers may be dropped in the public Internet.
+</t>
+    </abstract>
+  </front>
+
+  <middle>
+
+<section title="Introduction" anchor="intro"> 
+<t>
+IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and provide support for core functionality such as IPv6 fragmentation. However, common implementation limitations suggest that EHs present a challenge for IPv6 packet routing equipment, and evidence exists that IPv6 packets with EHs may be intentionally dropped in the public Internet in some network deployments.
+</t>
+
+<!--
+<t>Discussions about the security and operational implications of IPv6 extension headers are a regular feature in IETF working groups and other places.  Often in these discussions, important security and operational issues are overlooked.</t>
+-->
+
+<t>The authors of this document have been involved in numerous discussions about IPv6 extension headers (both within the IETF and in other fora), and have noticed that the security and operational implications associated with IPv6 EHs were unknown to the larger audience participating in these discussions.
+</t>
+
+<t>This document has the following goals:
+<list style="symbols">
+<t>Raise awareness about the security and operational implications of IPv6 Extension Headers, and presents reasons why some networks intentionally drop packets containing IPv6 Extension Headers.</t>
+<t>Highlight areas where current IPv6 support by networking devices maybe sub-optimal, such that the aforementioned support is improved.</t>
+<t>Highlight operational issues associated with IPv6 extension headers, such that those issues are considered in IETF standardization efforts.</t>
+</list>
+</t>
+
+
+<t>
+<xref target="previous-work"/> of this document summarizes the previous work that has been carried out in the area of IPv6 extension headers. <xref target="security-implications"/> briefly discusses the security implications of IPv6 Extension Headers, while <xref target="operational-implications"/> discusses their operational implications. <!--Finally, <xref target="future-work"/> suggests a possible action plan for improving the state of affairs with respect to IPv6 extension headers. -->
+</t>
+</section>
+
+<section title="Disclaimer" anchor="disclaimer"> 
+<t>This document analyzes the operational challenges represented by packets that employ IPv6 Extension Headers, and documents some of the operational reasons for which these packets may be dropped in the public Internet. This document IS NOT a recommendation to drop such packets, but rather an analysis of why they're dropped.
+</t>
+</section>
+
+
+
+<section title="Previous Work on IPv6 Extension Headers" anchor="previous-work">
+<t>Some of the operational implications of IPv6 Extension Headers have been discussed in IETF circles:
+<list>
+<t><xref target="I-D.taylor-v6ops-fragdrop"/> discusses a rationale for which operators drop IPv6 fragments.</t>
+<t> <xref target="I-D.wkumari-long-headers"/> discusses possible issues arising from "long" IPv6 header chains.</t>
+<t><xref target="I-D.kampanakis-6man-ipv6-eh-parsing"/> describes how inconsistencies in the way IPv6 packets with extension headers are parsed by different implementations may result in evasion of security controls, and presents guidelines for parsing IPv6 extension headers with the goal of providing a common and consistent parsing methodology for IPv6 implementations.
+</t>
+<t><xref target="I-D.ietf-opsec-ipv6-eh-filtering"/> analyzes the security implications of IPv6 EHs, and the operational implications of dropping packets that employ IPv6 EHs and associated options.
+</t>
+<t><xref target="RFC7113"/> discusses how some popular RA-Guard implementations are subject to evasion by means of IPv6 extension headers.</t>
+<t><xref target="I-D.ietf-intarea-frag-fragile"/> analyzes the fragility introduced by IP fragmentation.</t>
+</list>
+</t>
+
+
+<t>A number of recent RFCs have discussed issues related to IPv6 extension headers, specifying updates to a previous revision of the IPv6 standard (<xref target="RFC2460"/>), many of which have now been incorporated into the current IPv6 core standard (<xref target="RFC8200"/>). Namely,
+<list style="symbols">
+<t><xref target="RFC5095"/> discusses the security implications of Routing Header Type 0 (RTH0), and deprecates it.</t>
+<t><xref target="RFC5722"/> analyzes the security implications of overlapping fragments, and provides recommendations in this area.</t>
+<t><xref target="RFC7045"/> clarifies how intermediate nodes should deal with IPv6 extension headers.</t>
+<t><xref target="RFC7112"/> discusses the issues arising in a specific fragmentation case where the IPv6 header chain is fragmented into two or more fragments (and formally forbids such fragmentation case).</t>
+<t><xref target="RFC6946"/> discusses a flawed (but common) processing of the so-called IPv6 "atomic fragments", and specified improved processing of such packets.</t>
+<t><xref target="RFC8021"/> deprecates the generation of IPv6 atomic fragments.</t>
+<t><xref target="RFC8504"/> specifies processing rules for packets with extension headers, and also allows hosts to enforce limits on the number of options included in IPv6 EHs.</t>
+<t><xref target="RFC7739"/> discusses the security implications of predictable fragment Identification values, and provides recommendations for the generation of these values.</t>
+<t><xref target="RFC6980"/> analyzes the security implications of employing IPv6 fragmentation with Neighbor Discovery for IPv6, and formally recommends against such usage.</t>
+</list>
+</t>
+
+<t>Additionally, <xref target="RFC8200"/> has relaxed the requirement that &quot;all nodes examine and process the Hop-by-Hop Options header&quot; from <xref target="RFC2460"/>, by specifying that only to nodes that have been explicitly configured to process the Hop-by-Hop Options header are required to do so.</t>
+
+<t>A number of studies have measured the extent to which packets employing IPv6 extension headers are filtered in the public Internet:
+
+<list>
+<t><xref target="PMTUD-Blackholes"/>, <xref target="Gont-IEPG88"/>, <xref target="Gont-Chown-IEPG89"/>, and <xref target="Linkova-Gont-IEPG90"/> presented some preliminary measurements regarding the extent to which packet containing IPv6 EHs are dropped in the public Internet.</t>
+<t><xref target="RFC7872"/> presents more comprehensive results and documents the methodology for obtaining the presented results.</t>
+<t><xref target="Huston-2017"/> and <xref target="Huston-2020"/> measured packet drops resulting from IPv6 fragmentation when communicating with DNS servers.</t>
+
+</list>
+
+</t>
+</section>
+
+<section title="Packet Forwarding Engine Constraints" anchor="pfe-constraints">
+
+<t>
+
+Most modern routers use dedicated hardware (e.g.  ASICs or NPUs) to
+determine how to forward packets across their internal fabrics (see <xref target="IEPG94-Scudder"/> and <xref target="APNIC-Scudder"/> for details).  One of the
+common methods of handling next-hop lookup is to send a small portion of the
+ingress packet to a lookup engine with specialised hardware (e.g. ternary
+CAM or RLDRAM) to determine the packet's next-hop.  Technical constraints
+mean that there is a trade-off between the amount of data sent to the lookup
+engine and the overall performance of the lookup engine.  If more data is
+sent, the lookup engine can inspect further into the packet, but the overall
+performance of the system will be reduced.  If less data is sent, the
+overall performance of the router will be increased but the packet lookup
+engine may not be able to inspect far enough into a packet to determine how
+it should be handled.
+</t>
+<t>
+<list style="hanging">
+<!-- [fgont] This note was flagged as "FIX ME" -->
+<t hangText="NOTE:"><vspace blankLines="0"/>For example, current high-end
+routers can use up to 192 bytes
+of header (Cisco ASR9000 Typhoon) or 384 bytes of header (Juniper MX Trio).
+</t>
+</list>
+</t>
+
+<t> If a hardware forwarding engine on a modern router cannot make a
+forwarding decision about a packet because critical information is not sent
+to the look-up engine, then the router will normally drop the packet. 
+
+<list style="hanging">
+<!-- [fgont] This note was flagged as "FIX ME" -->
+<t hangText="NOTE:"><vspace blankLines="0"/><xref target="inability"/> discusses some of the reasons for which a modern router might need to access layer-4 information to make a forwarding decision.</t>
+</list>
+
+
+Historically, some packet forwarding engines punted packets of this form to
+the control plane for more in-depth analysis, but this is unfeasible on most
+current router architectures as a result of the vast difference between the hardware
+forwarding capacity of the router and processing capacity of the control plane and the size of the management link which
+connects the control plane to the forwarding plane.  </t>
+
+<t>
+
+If an IPv6 header chain is sufficiently long that its header exceeds the
+packet look-up capacity of the router, then it may be dropped due to hardware
+inability to determine how it should be handled.
+
+</t>
+
+
+</section>
+
+<section title="Requirement to Process Layer-3/layer-4 information in Intermediate Systems" anchor="inability">
+
+<t>The following subsections discuss some of reasons for which such layer-4 information may be needed by an intermediate systems or middlebox, and why packets containing IPv6 extension headers may represent a challenge in such scenarios.</t>
+
+
+
+
+<section title="ECMP and Hash-based Load-Sharing" anchor="ecmp-load-balancing">
+
+<t>In the case of ECMP (equal cost multi path) load sharing, the router on
+the sending side of the link needs to make a decision regarding which of the links to
+use for a given packet.  Since round-robin usage of the links is usually
+avoided in order to prevent packet reordering, forwarding engines need to
+use a mechanism which will consistently forward the same data streams down
+the same forwarding paths.  Most forwarding engines achieve this by
+calculating a simple hash using an n-tuple gleaned from a combination of
+layer-2 through to layer-4 packet header information.  This n-tuple will
+typically use the src/dst MAC address, src/dst IP address, and if possible
+further layer-4 src/dst port information.  As layer-4 port information
+increases the entropy of the hash, it is normally highly desirable to use it where
+possible.
+</t>
+
+<t>We note that in the IPv6 world, flows are expected to be identified by means of the IPv6 Flow Label <xref target="RFC6437"/>. Thus, ECMP and Hash-based Load-Sharing would be possible without the need to process the entire IPv6 header chain to obtain upper-layer information to identify flows. However, we note that for a long time many IPv6 implementations failed to set the Flow Label, and ECMP and Hash-based Load-Sharing devices also did not employ the Flow Label for performing their task.</t>
+<t>Clearly, widespread support of <xref target="RFC6437"/> would relieve middle-boxes from having to process the entire IPv6 header chain, making Flow Label-based ECMP and Hash-based Load-Sharing <xref target="RFC6438"/> feasible.</t>
+<t>While support of <xref target="RFC6437"/> is currently widespread for current versions of all popular host implementations, there is still only marginal usage of the IPv6 Flow Label for ECMP and load balancing <xref target="Cunha-2020"/> -- possibly as a result of issues that have been found in host implementations and middle-boxes <xref target="Jaeggli-2018"/>.</t>
+</section>
+
+
+
+<section title="Enforcing infrastructure ACLs" anchor="enforcing-infrastructure-acls">
+
+<t>Generally speaking, infrastructure ACLs (iACLs) drop unwanted packets destined 
+to parts of a provider's infrastructure, because they are not operationally
+needed and can be used for attacks of different sorts against the router's 
+control plane.  Some traffic needs to be differentiated depending on layer-3
+or layer-4 criteria to achieve a useful balance of protection and functionality, for example:
+<list style="symbols">
+ <t>Permit some amount of ICMP echo (ping) traffic towards the router's 
+ addresses for troubleshooting.</t>
+ <t>Permit BGP sessions on the shared network of an exchange point (potentially differentiating between the amount of packets/seconds permitted for established sessions and connection establishment), but do not permit other traffic from the same peer IP addresses.</t>
+</list>
+</t>
+</section>
+
+<section title="DDoS Management and Customer Requests for Filtering" anchor="ddos-management">
+<t>The case of customer DDoS protection and edge-to-core customer protection
+filters is similar in nature to the infrastructure ACL protection.  Similar
+to infrastructure ACL protection, layer-4 ACLs generally need to be applied as close to the
+edge of the network as possible, even though the intent is usually to protect the
+customer edge rather than the provider core.  Application of layer-4 DDoS protection
+to a network edge is often automated using Flowspec <xref target="RFC5575"/>.
+</t>
+
+<t>For example, a web site which normally only handled traffic on TCP ports
+80 and 443 could be subject to a volumetric DDoS attack using NTP and DNS
+packets with randomised source IP address, thereby rendering 
+traditional <xref target="RFC5635"/> source-based real-time black hole
+mechanisms useless.  In this situation, DDoS protection ACLs could be configured to
+block all UDP traffic at the network edge without impairing the web server
+functionality in any way.  Thus, being able to block arbitrary
+protocols at the network edge can avoid DDoS-related problems both in the provider
+network and on the customer edge link.
+</t>
+</section>
+
+</section>
+
+
+<section title="Operational Implications" anchor="operational-implications">
+
+<!-- 
+[fgont] Isn't this already discussed in the "ddos-management" section?
+
+<t>FIXME: Implementation of edge-to-core customer sanitisation filters</t>
+
+-->
+<section title="Inability to Find Layer-4 Information" anchor="inability-layer-4-info">
+<t>As discussed in <xref target="inability"/>, intermediate systems and middleboxes that need to find the layer-4 header must process the entire IPv6 extension header chain.  When such devices are unable to obtain the required information, they may simply resort to dropping the corresponding packets. 
+</t>
+</section>
+
+<section title="Route-Processor Protection" anchor="route-processor-protection">
+<t>Most modern routers have a fast hardware-assisted forwarding plane
+and a loosely coupled control plane, connected together with a link that
+has much less capacity than the forwarding plane could handle.  Traffic
+differentiation cannot be done by the control plane side, because this would
+overload the internal link connecting the forwarding plane to the control
+plane.
+</t>
+
+<t>The Hop-by-Hop Options header has been particularly challenging since, in most (if not all) implementations, it has typically caused the corresponding packet to be punted to a software path. As a result, operators usually drop IPv6 packets containing this extension header. Please see <xref target="RFC6192"/> for advice regarding protection of the router control plane.</t>
+</section>
+
+
+<section title="Inability to Perform Fine-grained Filtering" anchor="finer-grained">
+<t>Some router implementations lack fine-grained filtering of IPv6 extension headers. For example, an operator may want to drop packets containing Routing Header Type 0 (RHT0) but may only be able to filter on the extension header type (Routing Header). As a result, the operator may end up enforcing a more coarse filtering policy (e.g. "drop all packets containing a Routing Header" vs. "only drop packets that contain a Routing Header Type 0").
+</t>
+</section>
+
+<section title="Security Concerns Associated with IPv6 Extension Headers" anchor="security-implications">
+<t>The security implications of IPv6 Extension Headers generally fall into one or more of these categories:
+<list style="symbols">
+<t>Evasion of security controls</t>
+<t>DoS due to processing requirements</t>
+<t>DoS due to implementation errors</t>
+<t>Extension Header-specific issues</t>
+</list>
+</t>
+<!-- IPv4 packets that contain limited space for IPv4 options and an "Internet Header Length" (IHL) field where the upper-layer protocols c -->
+
+<t>Unlike IPv4 packets where the upper-layer protocol can be trivially found by means of the "IHL" ("Internet Header Length") IPv4 header field, the structure of IPv6 packets is more flexible and complex, and may represent a challenge for devices that need to find this information, since locating upper-layer protocol information requires that all IPv6 extension headers be examined. This has presented implementation difficulties, and packet filtering mechanisms that require upper-layer information (even if just the upper layer protocol type) have been found to be trivially evasible by inserting IPv6 Extension Headers between the main IPv6 header and the upper layer protocol. <xref target="RFC7113"/> describes this issue for the RA-Guard case, but the same techniques can be employed to circumvent other IPv6 firewall and packet filtering mechanisms.  Additionally, implementation inconsistencies in packet forwarding engines may result in evasion of security controls <xref target="I-D.kampanakis-6man-ipv6-eh-parsing"/> <xref target="Atlasis2014"/> <xref target="BH-EU-2014"/>.
+</t>
+
+
+<!-- [fgont]  The following paragraph was tagged with "FIXME:". Not sure if there's still stuff to fix here... But I leave this note as a reminder to all of us :-) 
+-->
+<t>Packets that use IPv6 Extension Headers may have a negative performance impact on the handling devices. Unless appropriate mitigations are put in place (e.g., packet dropping and/or rate-limiting), an attacker could simply send a large amount of IPv6 traffic employing IPv6 Extension Headers with the purpose of performing a Denial of Service (DoS) attack (see <xref target="operational-implications"/> for further details).
+<list style="hanging">
+<t hangText="NOTE:"><vspace blankLines="0"/>In the most trivial case, a packet that includes a Hop-by-Hop Options header might go through the slow forwarding path, and be processed by the router's CPU. Another possible <!-- implementation-dependent -->case might be that in which a router that has been configured to enforce an ACL based on upper-layer information (e.g., upper layer protocol or TCP Destination Port), needs to process the entire IPv6 header chain (in order to find the required information), causing the packet to be processed in the slow path <xref target="Cisco-EH-Cons"/>. We note that, for obvious reasons, the aforementioned performance issues may affect other devices such as firewalls, Network Intrusion Detection Systems (NIDS), etc. <xref target="Zack-FW-Benchmark"/>. The extent to which these devices are affected is  typically implementation-dependent.
+</t>
+</list>
+</t>
+
+<t>IPv6 implementations, like all other software, tend to mature with time and wide-scale deployment. While the IPv6 protocol itself has existed for over 20 years, serious bugs related to IPv6 Extension Header processing continue to be discovered<!-- (see e.g. <xref target="Cisco-Frag1"/> and <xref target="Cisco-Frag2"/>)-->.  Because there is currently little operational reliance on IPv6 Extension headers, the corresponding code paths are rarely exercised, and there is the potential for bugs that still remain to be discovered in some implementations.</t>
+
+<t>IPv6 Fragment Headers are employed to allow fragmentation of IPv6 packets. While many of the security implications of the fragmentation / reassembly mechanism are known from the IPv4 world, several related issues have crept into IPv6 implementations. These range from denial of service attacks to information leakage, as discussed in <xref target="RFC7739"/>, <xref target="Bonica-NANOG58"/> and <xref target="Atlasis2012"/>).
+</t>
+</section>
+
+</section>
+
+
+
+<!--
+<section title="Performance Implications" anchor="performance-implications">
+<t>FIXME:  Some IPv6 router implementations suffer from a negative performance impact when IPv6 Extension Headers are employed.</t>
+
+<t>In the most trivial case, a packet that includes a Hop-by-Hop Options header will typically go through the slow forwarding path, and be processed by the router's CPU. Another case is that in which a router that has been configured to enforce an ACL based on upper-layer information (e.g., upper layer protocol or TCP Destination Port). In such case, the router will need to process the entire IPv6 header chain in order to find the required information, and this may cause the packet to be processed in the slow path <xref target="Cisco-EH-Cons"/>.</t>
+
+<t>Processing a large amounts of traffic in the slow path may cause the router to be unable to handle the same traffic loads when compared to normal packets, and may result in Denial of Service (DoS) scenarios.</t>
+
+<t>We note that, for obvious reasons, the aforementioned performance issues may also affect other devices such as firewalls, Network Intrusion Detection Systems (NIDS), etc. <xref target="Zack-FW-Benchmark"/>.</t>
+</section>
+-->
+
+
+
+<!--
+<section title="Possible Future Work" anchor="future-work">
+<t>Based on the discussion provided in this document, we note that the following (*non*-mutually exclusive) actions might help to improve the state of affairs of IPv6 extension headers:
+<list style="symbols">
+<t>Providing support for better granularity in the specification of filters for IPv6 extension headers, such that filters for specific EH types and subtypes (e.g. RHT0 vs. RHT2) can be specified without affecting other extension header types/subtypes unnecessarily (please see <xref target="finer-grained"/>).</t>
+<t>Providing advice on the filtering of IPv6 packets that contain IPv6 extension headers (as in <xref target="I-D.ietf-opsec-ipv6-eh-filtering"/>).</t>
+
+<t>Enforcing a cap on the maximum length of an IPv6 EH chain (e.g., as proposed in <xref target="I-D.wkumari-long-headers"/>) should be evaluated. If not at the protocol specification level (i.e., "Standards Track"), such a cap could be recommended as operational advice of the form "IPv6 implementations are expected to support EH chains as long as the they fit in the Path-MTU for the corresponding packets (see <xref target="RFC7112"/>).
+</t>
+</list>
+</t>
+</section>
+-->
+
+<section title="IANA Considerations" anchor="iana-cons">
+<t>There are no IANA registries within this document.  The RFC-Editor can remove this section before publication of this document as an RFC.
+</t>
+</section>
+
+    <section title="Security Considerations">
+
+<t>The security implications of IPv6 extension headers are discussed in <xref target="security-implications"/>.  This document does not introduce any new security issues.
+</t>
+    </section>
+
+    <section title="Acknowledgements">
+<t>The authors would like to thank (in alphabetical order) Mikael Abrahamsson, Fred Baker, Brian Carpenter, Tim Chown, Tom Herbert, Lee Howard, Sander Steffann, Eduard Vasilenko, Eric Vyncke, Jingrong Xie, and Andrew Yourtchenko, for providing valuable comments on earlier versions of this document. Additionally, the authors would like to thank participants of the v6ops working group for their valuable input on the topics that led to the publication of this document.</t>
+
+<t>Fernando Gont would like to thank Jan Zorz / Go6 Lab &lt;http://go6lab.si/&gt;, Jared Mauch, and Sander Steffann &lt;http://steffann.nl/&gt;, for providing access to systems and networks that were employed to perform experiments and measurements involving packets with IPv6 Extension Headers.</t>
+    </section>
+
+
+  </middle>
+
+  <back>
+
+
+  <references title='Normative References'>
+	<?rfc include="reference.RFC.2460" ?> 
+	<?rfc include="reference.RFC.6946" ?>
+	<?rfc include="reference.RFC.5095" ?>
+	<?rfc include="reference.RFC.5722" ?>
+	<?rfc include="reference.RFC.7112" ?>
+	<?rfc include="reference.RFC.8021" ?>
+	<?rfc include="reference.RFC.8200" ?>
+	<?rfc include="reference.RFC.8504" ?>
+	<?rfc include="reference.RFC.6980" ?>
+  </references>
+
+  <references title='Informative References'>
+	<?rfc include="reference.RFC.5575" ?>
+	<?rfc include="reference.RFC.5635" ?>
+
+	<?rfc include="reference.RFC.6192" ?>
+	<?rfc include="reference.RFC.6437" ?>
+	<?rfc include="reference.RFC.6438" ?>
+
+	<?rfc include="reference.RFC.7045" ?>
+
+	<?rfc include="reference.RFC.7113" ?>
+	<?rfc include="reference.I-D.taylor-v6ops-fragdrop" ?>
+	<?rfc include="reference.I-D.wkumari-long-headers" ?>
+
+	<?rfc include="reference.I-D.kampanakis-6man-ipv6-eh-parsing" ?>
+
+	<?rfc include="reference.RFC.7739" ?>
+
+	<?rfc include="reference.RFC.7872" ?>
+	<?rfc include="reference.I-D.ietf-opsec-ipv6-eh-filtering" ?>
+	<?rfc include="reference.I-D.ietf-intarea-frag-fragile" ?>
+
+
+
+    <reference anchor="Atlasis2014" target="http://www.insinuator.net/2014/05/a-novel-way-of-abusing-ipv6-extension-headers-to-evade-ipv6-security-devices/">
+  <front>
+  <title>A Novel Way of Abusing IPv6 Extension Headers to Evade IPv6 Security Devices</title>
+  <author initials="A.A." surname="Atlasis" fullname="Antonios Atlasis">
+				<organization></organization>
+  </author>
+  <date month="May" year="2014"/>
+  </front>
+
+  </reference>
+
+
+    <reference anchor="Huston-2017" target="https://blog.apnic.net/2017/08/22/dealing-ipv6-fragmentation-dns/">
+  <front>
+  <title>Dealing with IPv6 fragmentation in the DNS</title>
+   <author fullname="Geoff Huston" initials="G." surname="Huston">
+      <organization abbrev="APNIC"/>
+
+      <address>
+        <email>gih@apnic.net</email>
+        <uri>http://www.apnic.net</uri>
+      </address>
+    </author>
+ <date year="2017"/>
+  </front>
+		<seriesInfo name="" value="APNIC Blog"/>
+  </reference>
+  
+
+    <reference anchor="Huston-2020" target="https://www.cmand.org/workshops/202006-v6/slides/2020-06-16-xtn-hdrs.pdf">
+  <front>
+  <title>Measurement of IPv6 Extension Header Support</title>
+   <author fullname="Geoff Huston" initials="G." surname="Huston">
+      <organization abbrev="APNIC"/>
+
+      <address>
+        <email>gih@apnic.net</email>
+        <uri>http://www.apnic.net</uri>
+      </address>
+    </author>
+ <date year="2020"/>
+  </front>
+		<seriesInfo name="" value="NPS/CAIDA 2020 Virtual IPv6 Workshop"/>
+  </reference>    
+
+
+    <reference anchor="Jaeggli-2018" target="https://blog.apnic.net/2018/01/11/ipv6-flow-label-misuse-hashing/">
+  <front>
+  <title>Dealing with IPv6 fragmentation in the DNS</title>
+   <author fullname="Joel Jaeggli" initials="G." surname="Jaeggli">
+      <organization abbrev="APNIC"/>
+
+    </author>
+ <date year="2018"/>
+  </front>
+		<seriesInfo name="" value="APNIC Blog"/>
+  </reference>
+
+    
+
+    <reference anchor="Cunha-2020" target="https://www.cmand.org/workshops/202006-v6/slides/cunha.pdf">
+  <front>
+  <title>IPv4 vs IPv6 load balancing in Internet routes</title>
+   <author fullname="Italo Cunha" initials="I." surname="Cunha">
+      <organization abbrev="UFMG"/>
+
+    </author>
+    
+  <date year="2020"/>
+  </front>
+		<seriesInfo name="" value="NPS/CAIDA 2020 Virtual IPv6 Workshop"/>
+  </reference>
+
+
+
+    <reference anchor="BH-EU-2014" target="https://www.ernw.de/download/eu-14-Atlasis-Rey-Schaefer-briefings-Evasion-of-HighEnd-IPS-Devices-wp.pdf">
+  <front>
+  <title>Evasion of High-End IDPS Devices at the IPv6 Era</title>
+  <author initials="A.a." surname="Atlasis" fullname="Antonios Atlasis">
+				<organization></organization>
+  </author>
+  <author initials="E.R." surname="Rey" fullname="Enno Rey">
+				<organization></organization>
+  </author>
+  <author initials="R.S." surname="Schaefer" fullname="Rafael Schaefer">
+				<organization></organization>
+  </author>
+
+
+  <date year="2014"/>
+  </front>
+		<seriesInfo name="" value="BlackHat Europe 2014"/>
+  </reference>
+
+
+
+    <reference anchor="Atlasis2012" target="https://media.blackhat.com/bh-eu-12/Atlasis/bh-eu-12-Atlasis-Attacking_IPv6-Slides.pdf">
+  <front>
+  <title>Attacking IPv6 Implementation Using Fragmentation</title>
+  <author initials="A.A." surname="Atlasis" fullname="Antonios Atlasis">
+				<organization></organization>
+  </author>
+  <date year=""/>
+  </front>
+		<seriesInfo name="" value="BlackHat Europe 2012. Amsterdam, Netherlands. March 14-16, 2012"/>
+  </reference>
+
+
+    <reference anchor="Gont-IEPG88" target="http://www.iepg.org/2013-11-ietf88/fgont-iepg-ietf88-ipv6-frag-and-eh.pdf">
+  <front>
+  <title>Fragmentation and Extension header Support in the IPv6 Internet</title>
+  <author initials="F." surname="Gont" fullname="Fernando Gont">
+				<organization></organization>
+  </author>
+  <date year=""/>
+  </front>
+		<seriesInfo name="" value="IEPG 88. Vancouver, BC, Canada. November 13, 2013"/>
+  </reference>
+
+    <reference anchor="Gont-Chown-IEPG89" target="http://www.iepg.org/2014-03-02-ietf89/fgont-iepg-ietf89-eh-update.pdf">
+  <front>
+  <title>A Small Update on the Use of IPv6 Extension Headers</title>
+  <author initials="F." surname="Gont" fullname="Fernando Gont">
+				<organization></organization>
+  </author>
+  <author initials="T." surname="Chown" fullname="Tim Chown">
+				<organization></organization>
+  </author>
+  <date year="IEPG 89. London, UK. March 2, 2014"/>
+  </front>
+
+  </reference>
+
+
+    <reference anchor="Linkova-Gont-IEPG90" target="http://www.iepg.org/2014-07-20-ietf90/iepg-ietf90-ipv6-ehs-in-the-real-world-v2.0.pdf">
+  <front>
+  <title>IPv6 Extension Headers in the Real World v2.0</title>
+  <author initials="J." surname="Linkova" fullname="Jen Linkova">
+				<organization></organization>
+  </author>
+  <author initials="F." surname="Gont" fullname="Fernando Gont">
+				<organization></organization>
+  </author>
+
+  <date year=""/>
+  </front>
+		<seriesInfo name="" value="IEPG 90. Toronto, ON, Canada. July 20, 2014"/>
+  </reference>
+
+
+    <reference anchor="IEPG94-Scudder" target="http://www.iepg.org/2015-11-01-ietf94/IEPG-RouterArchitecture-jgs.pdf">
+  <front>
+  <title>Modern Router Architecture for Protocol Designers</title>
+  <author initials="B." surname="Petersen" fullname="Brian Petersen">
+				<organization>Juniper Networks</organization>
+  </author>
+  <author initials="J." surname="Scudder" fullname="John Scudder">
+				<organization>Juniper Networks</organization>
+  </author>
+
+  <date year=""/>
+  </front>
+		<seriesInfo name="" value="IEPG 94. Yokohama, Japan. November 1, 2015"/>
+  </reference>
+
+    <reference anchor="APNIC-Scudder" target="https://blog.apnic.net/2020/06/04/modern-router-architecture-and-ipv6/">
+  <front>
+  <title>Modern router architecture and IPv6</title>
+
+  <author initials="J." surname="Scudder" fullname="John Scudder">
+				<organization>Juniper Networks</organization>
+  </author>
+
+  <date year=""/>
+  </front>
+		<seriesInfo name="" value="APNIC Blog, June 4, 2020"/>
+  </reference>
+
+    <reference anchor="Bonica-NANOG58" target="https://www.nanog.org/sites/default/files/mon.general.fragmentation.bonica.pdf">
+  <front>
+  <title>IPv6 Extension Headers in the Real World v2.0</title>
+  <author initials="R." surname="Bonica" fullname="Ron Bonica">
+				<organization></organization>
+  </author>
+
+
+  <date year=""/>
+  </front>
+		<seriesInfo name="" value="NANOG 58. New Orleans, Louisiana, USA. June 3-5, 2013"/>
+  </reference>
+
+
+
+
+<!--
+    <reference anchor="Cisco-Frag1" target="http://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20130925-ipv6vfr">
+  <front>
+  <title>Cisco IOS Software IPv6 Virtual Fragmentation Reassembly Denial of Service Vulnerability</title>
+  <author initials="" surname="Cisco" fullname="Cisco">
+				<organization></organization>
+  </author>
+  <date month="September" year="2013"/>
+  </front>
+
+  </reference>
+-->
+
+<!--
+    <reference anchor="Cisco-Frag2" target="http://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20150611-iosxr">
+  <front>
+  <title>sco IOS XR Software Crafted IPv6 Packet Denial of Service Vulnerability</title>
+  <author initials="" surname="Cisco" fullname="Cisco">
+				<organization></organization>
+  </author>
+  <date month="June" year="2015"/>
+  </front>
+
+  </reference>
+-->
+
+    <reference anchor="Cisco-EH-Cons" target="http://www.cisco.com/en/US/technologies/tk648/tk872/technologies_white_paper0900aecd8054d37d.pdf">
+  <front>
+  <title>IPv6 Extension Headers Review and Considerations</title>
+  <author initials="" surname="Cisco" fullname="Cisco">
+				<organization></organization>
+  </author>
+  <date month="October" year="2006"/>
+  </front>
+
+  </reference>
+
+
+    <reference anchor="Zack-FW-Benchmark" target="http://www.ipv6hackers.org/meetings/ipv6-hackers-1/zack-ipv6hackers1-firewall-security-assessment-and-benchmarking.pdf">
+  <front>
+  <title abbrev="Firewall Benchmarking">Firewall Security Assessment and Benchmarking IPv6 Firewall Load Tests</title>
+  <author initials="E." surname="Zack" fullname="Eldad Zack">
+  </author>
+  <date year=""/>
+  </front>
+		<seriesInfo name="" value="IPv6 Hackers Meeting #1, Berlin, Germany. June 30, 2013"/>
+<!-- July 27 - August 1 -->
+  </reference>
+
+
+    <reference anchor="PMTUD-Blackholes" target="http://www.nlnetlabs.nl/downloads/publications/pmtu-black-holes-msc-thesis.pdf">
+  <front>
+  <title>Discovering Path MTU black holes on the Internet using RIPE Atlas</title>
+  <author initials="M." surname="De Boer" fullname="Maikel De Boer">
+				<organization></organization>
+  </author>
+  <author initials="J." surname="Bosma" fullname="Jeffrey Bosma">
+				<organization></organization>
+  </author>
+  <date month="July" year="2012"/>
+  </front>
+
+  </reference>
+
+
+</references>
+
+  </back>
+</rfc>
