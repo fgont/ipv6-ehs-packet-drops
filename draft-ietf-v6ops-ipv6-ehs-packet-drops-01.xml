@@ -137,7 +137,7 @@ IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and p
 
 
 <t>
-<xref target="previous-work"/> of this document summarizes the previous work that has been carried out in the area of IPv6 extension headers. <xref target="pfe-constraints"/> discuses packet forwarding engine constraints in modern routers. <xref target="inability"/> discusses why modern routers and middle-boxes may need to access Layer-4 information to make a forwarding decision. Finally, <xref target="operational-implications"/> discusses the operational implications of IPv6 EHs. <!--Finally, <xref target="future-work"/> suggests a possible action plan for improving the state of affairs with respect to IPv6 extension headers. -->
+<xref target="previous-work"/> of this document summarizes the previous work that has been carried out in the area of IPv6 extension headers. <xref target="pfe-constraints"/> discusses packet forwarding engine constraints in contemporary routers. <xref target="inability"/> discusses why contemporary routers and middle-boxes may need to access Layer-4 information to make a forwarding decision. Finally, <xref target="operational-implications"/> discusses the operational implications of IPv6 EHs. <!--Finally, <xref target="future-work"/> suggests a possible action plan for improving the state of affairs with respect to IPv6 extension headers. -->
 </t>
 </section>
 
@@ -195,7 +195,7 @@ IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and p
 
 <t>
 
-Most modern routers use dedicated hardware (e.g.  ASICs or NPUs) to
+Most contemporary routers use dedicated hardware (e.g.  ASICs or NPUs) to
 determine how to forward packets across their internal fabrics (see <xref target="IEPG94-Scudder"/> and <xref target="APNIC-Scudder"/> for details).  One of the
 common methods of handling next-hop lookup is to send a small portion of the
 ingress packet to a lookup engine with specialised hardware (e.g. ternary
@@ -218,13 +218,13 @@ of header (Cisco ASR9000 Typhoon) or 384 bytes of header (Juniper MX Trio).
 </list>
 </t>
 
-<t> If a hardware forwarding engine on a modern router cannot make a
+<t> If a hardware forwarding engine on a contemporary router cannot make a
 forwarding decision about a packet because critical information is not sent
 to the look-up engine, then the router will normally drop the packet. 
 
 <list style="hanging">
 <!-- [fgont] This note was flagged as "FIX ME" -->
-<t hangText="NOTE:"><vspace blankLines="0"/><xref target="inability"/> discusses some of the reasons for which a modern router might need to access layer-4 information to make a forwarding decision.</t>
+<t hangText="NOTE:"><vspace blankLines="0"/><xref target="inability"/> discusses some of the reasons for which a contemporary router might need to access layer-4 information to make a forwarding decision.</t>
 </list>
 
 
@@ -247,7 +247,7 @@ inability to determine how it should be handled.
 
 <section title="Requirement to Process Layer-3/layer-4 information in Intermediate Systems" anchor="inability">
 
-<t>The following subsections discuss some of reasons for which modern routers and middle-boxes may need to process Layer-3/layer-4 information to make a forwarding decision.</t>
+<t>The following subsections discuss some of reasons for which contemporary routers and middle-boxes may need to process Layer-3/layer-4 information to make a forwarding decision.</t>
 
 
 
@@ -323,12 +323,12 @@ network and on the customer edge link.
 
 -->
 <section title="Inability to Find Layer-4 Information" anchor="inability-layer-4-info">
-<t>As discussed in <xref target="inability"/>, modern routers and middle-boxes that need to find the layer-4 header must process the entire IPv6 extension header chain.  When such devices are unable to obtain the required information, they may simply resort to dropping the corresponding packets. 
+<t>As discussed in <xref target="inability"/>, contemporary routers and middle-boxes that need to find the layer-4 header must process the entire IPv6 extension header chain.  When such devices are unable to obtain the required information, they may simply resort to dropping the corresponding packets. 
 </t>
 </section>
 
 <section title="Route-Processor Protection" anchor="route-processor-protection">
-<t>Most modern routers have a fast hardware-assisted forwarding plane
+<t>Most contemporary routers have a fast hardware-assisted forwarding plane
 and a loosely coupled control plane, connected together with a link that
 has much less capacity than the forwarding plane could handle.  Traffic
 differentiation cannot be done by the control plane side, because this would
