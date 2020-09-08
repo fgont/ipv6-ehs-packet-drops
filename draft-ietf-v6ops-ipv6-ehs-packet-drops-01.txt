@@ -908,8 +908,8 @@ Internet-Draft           IPv6 Extension Headers           September 2020
               Zack, E., "Firewall Security Assessment and Benchmarking
               IPv6 Firewall Load Tests",  IPv6 Hackers Meeting #1,
               Berlin, Germany. June 30, 2013,
-              <http://www.ipv6hackers.org/meetings/ipv6-hackers-1/zack-
-              ipv6hackers1-firewall-security-assessment-and-
+              <https://www.ipv6hackers.org/files/meetings/ipv6-hackers-
+              1/zack-ipv6hackers1-firewall-security-assessment-and-
               benchmarking.pdf>.
 
 Authors' Addresses

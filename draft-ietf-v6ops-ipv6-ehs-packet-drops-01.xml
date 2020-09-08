@@ -754,7 +754,7 @@ plane.
   </reference>
 
 
-    <reference anchor="Zack-FW-Benchmark" target="http://www.ipv6hackers.org/meetings/ipv6-hackers-1/zack-ipv6hackers1-firewall-security-assessment-and-benchmarking.pdf">
+    <reference anchor="Zack-FW-Benchmark" target="https://www.ipv6hackers.org/files/meetings/ipv6-hackers-1/zack-ipv6hackers1-firewall-security-assessment-and-benchmarking.pdf">
   <front>
   <title abbrev="Firewall Benchmarking">Firewall Security Assessment and Benchmarking IPv6 Firewall Load Tests</title>
   <author initials="E." surname="Zack" fullname="Eldad Zack">
