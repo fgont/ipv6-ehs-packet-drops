@@ -137,12 +137,12 @@ IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and p
 
 
 <t>
-<xref target="previous-work"/> of this document summarizes the previous work that has been carried out in the area of IPv6 extension headers. <xref target="pfe-constraints"/> discuses packet forwarding engine constraints in modern routers. <xref target="inability"/> discusses why modern routers and middle-boxes may need to access Layer-4 information to make a forwarding decision. Finally, <xref target="operational-implications"/> discusses the operational implications of IPv6 EHs. <!--Finally, <xref target="future-work"/> suggests a possible action plan for improving the state of affairs with respect to IPv6 extension headers. -->
+<xref target="previous-work"/> of this document summarizes the previous work that has been carried out in the area of IPv6 extension headers. <xref target="pfe-constraints"/> discusses packet forwarding engine constraints in contemporary routers. <xref target="inability"/> discusses why contemporary routers and middle-boxes may need to access Layer-4 information to make a forwarding decision. Finally, <xref target="operational-implications"/> discusses the operational implications of IPv6 EHs. <!--Finally, <xref target="future-work"/> suggests a possible action plan for improving the state of affairs with respect to IPv6 extension headers. -->
 </t>
 </section>
 
 <section title="Disclaimer" anchor="disclaimer"> 
-<t>This document analyzes the operational challenges represented by packets that employ IPv6 Extension Headers, and documents some of the operational reasons for which these packets may be dropped in the public Internet. This document IS NOT a recommendation to drop such packets, but rather an analysis of why they are dropped.
+<t>This document analyzes the operational challenges represented by packets that employ IPv6 Extension Headers, and documents some of the operational reasons why these packets may be dropped in the public Internet. This document is not a recommendation to drop such packets, but rather an analysis of why they are dropped.
 </t>
 </section>
 
@@ -177,7 +177,7 @@ IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and p
 </list>
 </t>
 
-<t>Additionally, <xref target="RFC8200"/> has relaxed the requirement that &quot;all nodes examine and process the Hop-by-Hop Options header&quot; from <xref target="RFC2460"/>, by specifying that only to nodes that have been explicitly configured to process the Hop-by-Hop Options header are required to do so.</t>
+<t>Additionally, <xref target="RFC8200"/> has relaxed the requirement that &quot;all nodes examine and process the Hop-by-Hop Options header&quot; from <xref target="RFC2460"/>, by specifying that only nodes that have been explicitly configured to process the Hop-by-Hop Options header are required to do so.</t>
 
 <t>A number of studies have measured the extent to which packets employing IPv6 extension headers are dropped in the public Internet:
 
@@ -195,7 +195,7 @@ IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and p
 
 <t>
 
-Most modern routers use dedicated hardware (e.g.  ASICs or NPUs) to
+Most contemporary routers use dedicated hardware (e.g.  ASICs or NPUs) to
 determine how to forward packets across their internal fabrics (see <xref target="IEPG94-Scudder"/> and <xref target="APNIC-Scudder"/> for details).  One of the
 common methods of handling next-hop lookup is to send a small portion of the
 ingress packet to a lookup engine with specialised hardware (e.g. ternary
@@ -211,20 +211,20 @@ it should be handled.
 <t>
 <list style="hanging">
 <!-- [fgont] This note was flagged as "FIX ME" -->
-<t hangText="NOTE:"><vspace blankLines="0"/>For example, current high-end
+<t hangText="NOTE:"><vspace blankLines="0"/>For example, contemporary high-end
 routers can use up to 192 bytes
 of header (Cisco ASR9000 Typhoon) or 384 bytes of header (Juniper MX Trio).
 </t>
 </list>
 </t>
 
-<t> If a hardware forwarding engine on a modern router cannot make a
+<t> If a hardware forwarding engine on a contemporary router cannot make a
 forwarding decision about a packet because critical information is not sent
 to the look-up engine, then the router will normally drop the packet. 
 
 <list style="hanging">
 <!-- [fgont] This note was flagged as "FIX ME" -->
-<t hangText="NOTE:"><vspace blankLines="0"/><xref target="inability"/> discusses some of the reasons for which a modern router might need to access layer-4 information to make a forwarding decision.</t>
+<t hangText="NOTE:"><vspace blankLines="0"/><xref target="inability"/> discusses some of the reasons for which a contemporary router might need to access layer-4 information to make a forwarding decision.</t>
 </list>
 
 
@@ -247,7 +247,7 @@ inability to determine how it should be handled.
 
 <section title="Requirement to Process Layer-3/layer-4 information in Intermediate Systems" anchor="inability">
 
-<t>The following subsections discuss some of reasons for which modern routers and middle-boxes may need to process Layer-3/layer-4 information to make a forwarding decision.</t>
+<t>The following subsections discuss some of reasons for which contemporary routers and middle-boxes may need to process Layer-3/layer-4 information to make a forwarding decision.</t>
 
 
 
@@ -279,11 +279,11 @@ possible.
 
 <t>Generally speaking, infrastructure ACLs (iACLs) drop unwanted packets destined 
 to parts of a provider's infrastructure, because they are not operationally
-needed and can be used for attacks of different sorts against the router's 
-control plane.  Some traffic needs to be differentiated depending on layer-3
+needed and can be used for attacks of different sorts against router
+control planes.  Some traffic needs to be differentiated depending on layer-3
 or layer-4 criteria to achieve a useful balance of protection and functionality, for example:
 <list style="symbols">
- <t>Permit some amount of ICMP echo (ping) traffic towards the router's 
+ <t>Permit some amount of ICMP echo (ping) traffic towards a router's 
  addresses for troubleshooting.</t>
  <t>Permit BGP sessions on the shared network of an exchange point (potentially differentiating between the amount of packets/seconds permitted for established sessions and connection establishment), but do not permit other traffic from the same peer IP addresses.</t>
 </list>
@@ -323,12 +323,12 @@ network and on the customer edge link.
 
 -->
 <section title="Inability to Find Layer-4 Information" anchor="inability-layer-4-info">
-<t>As discussed in <xref target="inability"/>, modern routers and middle-boxes that need to find the layer-4 header must process the entire IPv6 extension header chain.  When such devices are unable to obtain the required information, they may simply resort to dropping the corresponding packets. 
+<t>As discussed in <xref target="inability"/>, contemporary routers and middle-boxes that need to find the layer-4 header must process the entire IPv6 extension header chain.  When such devices are unable to obtain the required information, they may simply resort to dropping the corresponding packets. 
 </t>
 </section>
 
 <section title="Route-Processor Protection" anchor="route-processor-protection">
-<t>Most modern routers have a fast hardware-assisted forwarding plane
+<t>Most contemporary routers have a fast hardware-assisted forwarding plane
 and a loosely coupled control plane, connected together with a link that
 has much less capacity than the forwarding plane could handle.  Traffic
 differentiation cannot be done by the control plane side, because this would
@@ -336,7 +336,7 @@ overload the internal link connecting the forwarding plane to the control
 plane.
 </t>
 
-<t>The Hop-by-Hop Options header has been particularly challenging since, in most (if not all) implementations, it has typically caused the corresponding packet to be punted to a software path. As a result, operators usually drop IPv6 packets containing this extension header. Please see <xref target="RFC6192"/> for advice regarding protection of the router control plane.</t>
+<t>The Hop-by-Hop Options header has been particularly challenging since in most circumstances, the corresponding packet is punted to the control plane for processing. As a result, operators usually drop IPv6 packets containing this extension header. Please see <xref target="RFC6192"/> for advice regarding protection of the router control plane.</t>
 </section>
 
 
@@ -356,15 +356,15 @@ plane.
 </t>
 <!-- IPv4 packets that contain limited space for IPv4 options and an "Internet Header Length" (IHL) field where the upper-layer protocols c -->
 
-<t>Unlike IPv4 packets where the upper-layer protocol can be trivially found by means of the "IHL" ("Internet Header Length") IPv4 header field, the structure of IPv6 packets is more flexible and complex, and may represent a challenge for devices that need to find this information, since locating upper-layer protocol information requires that all IPv6 extension headers be examined. This has presented implementation difficulties, and packet filtering mechanisms that require upper-layer information (even if just the upper layer protocol type) have been found to be trivially evasible by inserting IPv6 Extension Headers between the main IPv6 header and the upper layer protocol. <xref target="RFC7113"/> describes this issue for the RA-Guard case, but the same techniques can be employed to circumvent other IPv6 firewall and packet filtering mechanisms.  Additionally, implementation inconsistencies in packet forwarding engines may result in evasion of security controls <xref target="I-D.kampanakis-6man-ipv6-eh-parsing"/> <xref target="Atlasis2014"/> <xref target="BH-EU-2014"/>.
+<t>Unlike IPv4 packets where the upper-layer protocol can be trivially found by means of the "IHL" ("Internet Header Length") IPv4 header field, the structure of IPv6 packets is more flexible and complex, and may represent a challenge for devices that need to find this information, since locating upper-layer protocol information requires that all IPv6 extension headers be examined. This has presented implementation difficulties, and packet filtering mechanisms that require upper-layer information (even if just the upper layer protocol type) can be trivially circumvented by inserting IPv6 Extension Headers between the main IPv6 header and the upper layer protocol. <xref target="RFC7113"/> describes this issue for the RA-Guard case, but the same techniques can be employed to circumvent other IPv6 firewall and packet filtering mechanisms.  Additionally, implementation inconsistencies in packet forwarding engines may result in evasion of security controls <xref target="I-D.kampanakis-6man-ipv6-eh-parsing"/> <xref target="Atlasis2014"/> <xref target="BH-EU-2014"/>.
 </t>
 
 
 <!-- [fgont]  The following paragraph was tagged with "FIXME:". Not sure if there's still stuff to fix here... But I leave this note as a reminder to all of us :-) 
 -->
-<t>Packets that use IPv6 Extension Headers may have a negative performance impact on the handling devices. Unless appropriate mitigations are put in place (e.g., packet dropping and/or rate-limiting), an attacker could simply send a large amount of IPv6 traffic employing IPv6 Extension Headers with the purpose of performing a Denial of Service (DoS) attack (see <xref target="operational-implications"/> for further details).
+<t>Packets with attached IPv6 Extension Headers may impact performance on routers that forward them. Unless appropriate mitigations are put in place (e.g., packet dropping and/or rate-limiting), an attacker could simply send a large amount of IPv6 traffic employing IPv6 Extension Headers with the purpose of performing a Denial of Service (DoS) attack (see <xref target="operational-implications"/> for further details).
 <list style="hanging">
-<t hangText="NOTE:"><vspace blankLines="0"/>In the most trivial case, a packet that includes a Hop-by-Hop Options header might go through the slow forwarding path, and be processed by the router's CPU. Another possible <!-- implementation-dependent -->case might be that in which a router that has been configured to enforce an ACL based on upper-layer information (e.g., upper layer protocol or TCP Destination Port), needs to process the entire IPv6 header chain (in order to find the required information), causing the packet to be processed in the slow path <xref target="Cisco-EH-Cons"/>. We note that, for obvious reasons, the aforementioned performance issues may affect other devices such as firewalls, Network Intrusion Detection Systems (NIDS), etc. <xref target="Zack-FW-Benchmark"/>. The extent to which these devices are affected is  typically implementation-dependent.
+<t hangText="NOTE:"><vspace blankLines="0"/>In the most trivial case, a packet that includes a Hop-by-Hop Options header might go through the slow forwarding path, and be processed by the router's CPU. Another possible <!-- implementation-dependent -->case might be where a router that has been configured to enforce an ACL based on upper-layer information (e.g., upper layer protocol or TCP Destination Port), needs to process the entire IPv6 header chain (in order to find the required information), causing the packet to be processed in the slow path <xref target="Cisco-EH-Cons"/>. We note that, for obvious reasons, the aforementioned performance issues may affect other devices such as firewalls, Network Intrusion Detection Systems (NIDS), etc. <xref target="Zack-FW-Benchmark"/>. The extent to which these devices are affected is  typically implementation-dependent.
 </t>
 </list>
 </t>
@@ -421,7 +421,7 @@ plane.
     <section title="Acknowledgements">
 <t>The authors would like to thank (in alphabetical order) Mikael Abrahamsson, Fred Baker, Brian Carpenter, Tim Chown, Owen DeLong, Tom Herbert, Lee Howard, Sander Steffann, Eduard Vasilenko, Eric Vyncke, Jingrong Xie, and Andrew Yourtchenko, for providing valuable comments on earlier versions of this document. </t>
 
-<t>Fernando Gont would like to thank Jan Zorz / Go6 Lab &lt;http://go6lab.si/&gt;, Jared Mauch, and Sander Steffann &lt;http://steffann.nl/&gt;, for providing access to systems and networks that were employed to perform experiments and measurements involving packets with IPv6 Extension Headers.</t>
+<t>Fernando Gont would like to thank Jan Zorz / Go6 Lab &lt;https://go6lab.si/&gt;, Jared Mauch, and Sander Steffann &lt;https://steffann.nl/&gt;, for providing access to systems and networks that were employed to perform experiments and measurements involving packets with IPv6 Extension Headers.</t>
     </section>
 
 
