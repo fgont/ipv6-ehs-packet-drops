@@ -242,6 +242,34 @@ inability to determine how it should be handled.
 
 </t>
 
+<section title="Recirculation" anchor="recirculation">
+<t>
+
+Although TLV chains are amenable to iterative processing on architectures
+which have packet look-up engines with deep inspection capabilities, some
+packet forwarding engines manage IPv6 Extension Header chains using
+recirculation.  This approach processes Extension Headers one at a time:
+when processing on one Extension Header is completed, the packet is looped
+back through the processing engine again.  This recirculation process
+continues repeatedly until there are no more Extension Headers left to be
+processed.
+
+</t>
+<t>
+
+Recirculation is typically used on packet forwarding engines with limited
+look-up capability, as it allows arbitrarily long header chains to be
+processed without the complexity and cost associated with packet forwarding
+engines which have deep look-up capabilities.  However, recirculation can
+impact the forwarding capacity of hardware, as each packet will pass through
+the processing engine multiple times.  Depending on configuration, the type
+of packets being processed, and the hardware capabilities of the packet
+forwarding engine, this may impact data-plane throughput performance on the
+router.
+
+</t>
+
+</section>
 
 </section>
 
