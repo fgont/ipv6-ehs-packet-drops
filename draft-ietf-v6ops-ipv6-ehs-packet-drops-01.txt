@@ -775,9 +775,9 @@ Internet-Draft           IPv6 Extension Headers           September 2020
 
    The authors would like to thank (in alphabetical order) Mikael
    Abrahamsson, Fred Baker, Brian Carpenter, Tim Chown, Owen DeLong, Tom
-   Herbert, Lee Howard, Sander Steffann, Eduard Vasilenko, Eric Vyncke,
-   Jingrong Xie, and Andrew Yourtchenko, for providing valuable comments
-   on earlier versions of this document.
+   Herbert, Lee Howard, Tom Petch, Sander Steffann, Eduard Vasilenko,
+   Eric Vyncke, Jingrong Xie, and Andrew Yourtchenko, for providing
+   valuable comments on earlier versions of this document.
 
 
 
