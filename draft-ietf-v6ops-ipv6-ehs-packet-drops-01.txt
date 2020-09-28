@@ -5,7 +5,7 @@
 IPv6 Operations Working Group (v6ops)                            F. Gont
 Internet-Draft                                              SI6 Networks
 Intended status: Informational                               N. Hilliard
-Expires: March 11, 2021                                             INEX
+Expires: March 31, 2021                                             INEX
                                                               G. Doering
                                                              SpaceNet AG
                                                                W. Kumari
@@ -14,7 +14,7 @@ Expires: March 11, 2021                                             INEX
                                                                    APNIC
                                                                   W. Liu
                                                      Huawei Technologies
-                                                       September 7, 2020
+                                                      September 27, 2020
 
 
     Operational Implications of IPv6 Packets with Extension Headers
@@ -41,7 +41,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on March 11, 2021.
+   This Internet-Draft will expire on March 31, 2021.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Gont, et al.             Expires March 11, 2021                 [Page 1]
+Gont, et al.             Expires March 31, 2021                 [Page 1]
 
 Internet-Draft           IPv6 Extension Headers           September 2020
 
@@ -70,27 +70,29 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Disclaimer  . . . . . . . . . . . . . . . . . . . . . . . . .   3
-   3.  Previous Work on IPv6 Extension Headers . . . . . . . . . . .   3
-   4.  Packet Forwarding Engine Constraints  . . . . . . . . . . . .   5
-   5.  Requirement to Process Layer-3/layer-4 information in
-       Intermediate Systems  . . . . . . . . . . . . . . . . . . . .   6
-     5.1.  ECMP and Hash-based Load-Sharing  . . . . . . . . . . . .   6
-     5.2.  Enforcing infrastructure ACLs . . . . . . . . . . . . . .   7
-     5.3.  DDoS Management and Customer Requests for Filtering . . .   7
-     5.4.  Network Intrusion Detection and Prevention  . . . . . . .   8
-     5.5.  Firewalling . . . . . . . . . . . . . . . . . . . . . . .   8
-   6.  Operational Implications  . . . . . . . . . . . . . . . . . .   9
-     6.1.  Inability to Find Layer-4 Information . . . . . . . . . .   9
-     6.2.  Route-Processor Protection  . . . . . . . . . . . . . . .   9
-     6.3.  Inability to Perform Fine-grained Filtering . . . . . . .   9
-     6.4.  Security Concerns Associated with IPv6 Extension Headers   10
-   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  11
-   8.  Security Considerations . . . . . . . . . . . . . . . . . . .  11
-   9.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  11
-   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  12
-     10.1.  Normative References . . . . . . . . . . . . . . . . . .  12
-     10.2.  Informative References . . . . . . . . . . . . . . . . .  13
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  17
+   3.  Background Information  . . . . . . . . . . . . . . . . . . .   3
+   4.  Previous Work on IPv6 Extension Headers . . . . . . . . . . .   6
+   5.  Packet Forwarding Engine Constraints  . . . . . . . . . . . .   8
+     5.1.  Recirculation . . . . . . . . . . . . . . . . . . . . . .   9
+   6.  Requirement to Process Layer-3/layer-4 information in
+       Intermediate Systems  . . . . . . . . . . . . . . . . . . . .   9
+     6.1.  ECMP and Hash-based Load-Sharing  . . . . . . . . . . . .   9
+     6.2.  Enforcing infrastructure ACLs . . . . . . . . . . . . . .  10
+     6.3.  DDoS Management and Customer Requests for Filtering . . .  10
+     6.4.  Network Intrusion Detection and Prevention  . . . . . . .  11
+     6.5.  Firewalling . . . . . . . . . . . . . . . . . . . . . . .  11
+   7.  Operational Implications  . . . . . . . . . . . . . . . . . .  12
+     7.1.  Inability to Find Layer-4 Information . . . . . . . . . .  12
+     7.2.  Route-Processor Protection  . . . . . . . . . . . . . . .  12
+     7.3.  Inability to Perform Fine-grained Filtering . . . . . . .  13
+     7.4.  Security Concerns Associated with IPv6 Extension Headers   13
+   8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  14
+   9.  Security Considerations . . . . . . . . . . . . . . . . . . .  14
+   10. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  14
+   11. References  . . . . . . . . . . . . . . . . . . . . . . . . .  15
+     11.1.  Normative References . . . . . . . . . . . . . . . . . .  15
+     11.2.  Informative References . . . . . . . . . . . . . . . . .  16
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  20
 
 1.  Introduction
 
@@ -104,16 +106,15 @@ Table of Contents
 
    The authors of this document have been involved in numerous
    discussions about IPv6 extension headers (both within the IETF and in
-   other fora), and have noticed that the security and operational
 
 
 
-
-Gont, et al.             Expires March 11, 2021                 [Page 2]
+Gont, et al.             Expires March 31, 2021                 [Page 2]
 
 Internet-Draft           IPv6 Extension Headers           September 2020
 
 
+   other fora), and have noticed that the security and operational
    implications associated with IPv6 EHs were unknown to the larger
    audience participating in these discussions.
 
@@ -131,12 +132,12 @@ Internet-Draft           IPv6 Extension Headers           September 2020
       headers, such that those issues are considered in IETF
       standardization efforts.
 
-   Section 3 of this document summarizes the previous work that has been
-   carried out in the area of IPv6 extension headers.  Section 4
+   Section 4 of this document summarizes the previous work that has been
+   carried out in the area of IPv6 extension headers.  Section 5
    discusses packet forwarding engine constraints in contemporary
-   routers.  Section 5 discusses why contemporary routers and middle-
+   routers.  Section 6 discusses why contemporary routers and middle-
    boxes may need to access Layer-4 information to make a forwarding
-   decision.  Finally, Section 6 discusses the operational implications
+   decision.  Finally, Section 7 discusses the operational implications
    of IPv6 EHs.
 
 2.  Disclaimer
@@ -147,7 +148,159 @@ Internet-Draft           IPv6 Extension Headers           September 2020
    Internet.  This document is not a recommendation to drop such
    packets, but rather an analysis of why they are dropped.
 
-3.  Previous Work on IPv6 Extension Headers
+3.  Background Information
+
+   It is useful to compare the basic structure of IPv6 packets against
+   that of IPv4 packets, and analyze the implications of the two
+   different packet structures.
+
+   IPv4 packets have a variable-length header size, that allows for the
+   use of IPv4 "options" -- optional information that may be of use by
+   nodes processing IPv4 packets.  The IPv4 header length is specified
+   in the IHL header field of the mandatory IPv4 header, and must be in
+   the range from 20 octets (the minimum IPv4 header size) to 60 octets
+   (accommodating at most 40 octets of options).
+
+
+
+
+
+Gont, et al.             Expires March 31, 2021                 [Page 3]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
+
+      Protocol, IHL
+           ---------+
+           |        |
+           |        v
+      +------//-----+------------------------+
+      |             |                        |
+      |    IPv4     |       Upper-Layer      |
+      |    Header   |       Protocol         |
+      |             |                        |
+      +-----//------+------------------------+
+
+      variable length
+      <------------->
+
+                      Figure 1: IPv4 Packet Structure
+
+   There are a number of properties associated with this packet
+   structure:
+
+   o  Firstly, since the header length is specified via the 4-bit IHL
+      field in units of 32-bit words, the maximum header length is 60
+      octets, and therefore there is an implicit limit on the maximum
+      number of options that any packet can carry.
+
+   o  Secondly, since the header length is specified in the mandatory
+      IPv4 header, it is trivial to find the upper-layer protocol: the
+      header of the upper-layer protocol is simply "internet header
+      length" octets from the beginning of the IPv4 packet.
+      Furthermore, since there is an implicit limit on the maximum IPv4
+      header size, there is an implicit limit regarding "how deep into
+      the packet" the upper layer may be.
+
+   o  Thirdly, the upper-layer protocol type is specified via the
+      "Protocol" field of the mandatory IPv4 header, and hence it is
+      readily available by any system that can process the mandatory
+      IPv4 header.
+
+   o  Fourthly, all IP options are included in the same option
+      container.  This means that any system (whether host or router)
+      willing to employ IP options must parse the entire option
+      "container", looking for any interesting options.  For example,
+      routers may need to parse and skip options that are meant for the
+      destination host(s) as opposed to intermediate routers.
+
+   IPv6 took a different approach for the IPv6 packet structure.  Rather
+   than employing variable-length header as IPv4, IPv6 employs a linked-
+   list-like packet structure, where a mandatory fixed-length IPv6
+   header is followed by an arbitrary number of optional extension
+
+
+
+Gont, et al.             Expires March 31, 2021                 [Page 4]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
+
+   headers, with the upper-layer header being the last header in the
+   IPv6 header chain.
+
+           NH          NH, EH-length      NH, EH-length
+            +-------+      +------+            +-------+
+            |       |      |      |            |       |
+            |       v      |      v            |       v
+      +-------------+-------------+-//-+---------------+--------------+
+      |             |             |    |               |              |
+      |    IPv6     |    Ext.     |    |     Ext.      |  Upper-Layer |
+      |    header   |    Header   |    |     Header    |  Protocol    |
+      |             |             |    |               |              |
+      +-------------+-------------+-//-+---------------+--------------+
+
+       fixed length    variable number of EHs & length
+      <------------> <-------------------------------->
+
+                      Figure 2: IPv6 Packet Structure
+
+   The mandatory IPv6 header contains a "Next Header" (NH) field, which
+   specifies the "next header" type that follows in the IPv6 header
+   chain (or "no header" if the IPv6 packet has no upper-layer header).
+   The next header may be an IPv6 extension header or an upper-layer
+   protocol, with both extension headers and upper-layer protocols
+   sharing the same protocol number registry.  A special "no header"
+   type may always terminate the IPv6 header chain when the packet
+   contains no further extension headers or upper-layer protocol.  Each
+   extension header typically specifies its length (unless it is
+   implicit from the extension header type), and the "next header" type
+   that follows in the IPv6 IPv6 header chain.
+
+   This packet structure results in the following characteristics:
+
+   o  In principle, since options are conveyed in different option
+      containers (i.e., different extension header types), options can
+      be separated on the basis of the systems that should process them.
+      For example, options that should be processed only by the
+      destination node(s) may be include in a "Destination Options"
+      extension header, whereas options that are meant to be processed
+      by all nodes processing the packet may be conveyed in a "Hop-by-
+      Hop Options" extension header.  This may relieve e.g. routers from
+      having to process options that are only meant for the destination
+      node(s).
+
+   o  [RFC2460] originally allowed IPv6 packets to contain an
+      arbitrarily large number of options that was only limited by the
+      "Payload Length" field of the original (un-fragmented) IPv6 packet
+      - allowing the IPv6 header chain to be fragmented among multiple
+
+
+
+Gont, et al.             Expires March 31, 2021                 [Page 5]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
+
+      packets (see [RFC7112]).  However, the current IPv6 standard
+      ([RFC8200]), requires the entire IPv6 header chain to be contained
+      in the first fragment of a packet, and thus essentially limiting
+      the IPv6 extension header chain to the Path-MTU size.
+
+   o  There is no upper-limit regarding "how deep into the IPv6 packet"
+      the upper-layer may be found.  For example, the upper-layer header
+      may be contained at the end of a Path-MTU-sized packet.
+
+   o  The mandatory IPv6 header specifies neither the upper-layer
+      protocol type nor the offset within the IPv6 packet where the
+      upper-layer header can be found (if at all present).  This means
+      that the only way for a node to obtain the upper-layer protocol
+      type or find the upper-layer protocol header is to parse and
+      process the entire IPv6 header chain, in sequence, starting from
+      the mandatory IPv6 header, until the last header in the IPv6
+      header chain is found.
+
+4.  Previous Work on IPv6 Extension Headers
 
    Some of the operational implications of IPv6 Extension Headers have
    been discussed in IETF circles:
@@ -162,14 +315,6 @@ Internet-Draft           IPv6 Extension Headers           September 2020
       inconsistencies in the way IPv6 packets with extension headers are
       parsed by different implementations may result in evasion of
       security controls, and presents guidelines for parsing IPv6
-
-
-
-Gont, et al.             Expires March 11, 2021                 [Page 3]
-
-Internet-Draft           IPv6 Extension Headers           September 2020
-
-
       extension headers with the goal of providing a common and
       consistent parsing methodology for IPv6 implementations.
 
@@ -180,12 +325,19 @@ Internet-Draft           IPv6 Extension Headers           September 2020
    o  [RFC7113] discusses how some popular RA-Guard implementations are
       subject to evasion by means of IPv6 extension headers.
 
-   o  [I-D.ietf-intarea-frag-fragile] analyzes the fragility introduced
-      by IP fragmentation.
+   o  [RFC8900] analyzes the fragility introduced by IP fragmentation.
 
    A number of recent RFCs have discussed issues related to IPv6
    extension headers, specifying updates to a previous revision of the
    IPv6 standard ([RFC2460]), many of which have now been incorporated
+
+
+
+Gont, et al.             Expires March 31, 2021                 [Page 6]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
+
    into the current IPv6 core standard ([RFC8200]) or the IPv6 Node
    Requirements ([RFC8504]).  Namely,
 
@@ -216,16 +368,6 @@ Internet-Draft           IPv6 Extension Headers           September 2020
       fragment Identification values, and provides recommendations for
       the generation of these values.
 
-
-
-
-
-
-Gont, et al.             Expires March 11, 2021                 [Page 4]
-
-Internet-Draft           IPv6 Extension Headers           September 2020
-
-
    o  [RFC6980] analyzes the security implications of employing IPv6
       fragmentation with Neighbor Discovery for IPv6, and formally
       recommends against such usage.
@@ -243,13 +385,22 @@ Internet-Draft           IPv6 Extension Headers           September 2020
       regarding the extent to which packet containing IPv6 EHs are
       dropped in the public Internet.
 
+
+
+
+
+Gont, et al.             Expires March 31, 2021                 [Page 7]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
+
    o  [RFC7872] presents more comprehensive results and documents the
       methodology for obtaining the presented results.
 
    o  [Huston-2017] and [Huston-2020] measured packet drops resulting
       from IPv6 fragmentation when communicating with DNS servers.
 
-4.  Packet Forwarding Engine Constraints
+5.  Packet Forwarding Engine Constraints
 
    Most contemporary routers use dedicated hardware (e.g.  ASICs or
    NPUs) to determine how to forward packets across their internal
@@ -273,20 +424,11 @@ Internet-Draft           IPv6 Extension Headers           September 2020
 
    If a hardware forwarding engine on a contemporary router cannot make
    a forwarding decision about a packet because critical information is
-
-
-
-
-Gont, et al.             Expires March 11, 2021                 [Page 5]
-
-Internet-Draft           IPv6 Extension Headers           September 2020
-
-
    not sent to the look-up engine, then the router will normally drop
    the packet.
 
    NOTE:
-      Section 5 discusses some of the reasons for which a contemporary
+      Section 6 discusses some of the reasons for which a contemporary
       router might need to access layer-4 information to make a
       forwarding decision.
 
@@ -298,18 +440,50 @@ Internet-Draft           IPv6 Extension Headers           September 2020
    the management link which connects the control plane to the
    forwarding plane.
 
+
+
+
+
+
+Gont, et al.             Expires March 31, 2021                 [Page 8]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
+
    If an IPv6 header chain is sufficiently long that its header exceeds
    the packet look-up capacity of the router, then it may be dropped due
    to hardware inability to determine how it should be handled.
 
-5.  Requirement to Process Layer-3/layer-4 information in Intermediate
+5.1.  Recirculation
+
+   Although TLV chains are amenable to iterative processing on
+   architectures which have packet look-up engines with deep inspection
+   capabilities, some packet forwarding engines manage IPv6 Extension
+   Header chains using recirculation.  This approach processes Extension
+   Headers one at a time: when processing on one Extension Header is
+   completed, the packet is looped back through the processing engine
+   again.  This recirculation process continues repeatedly until there
+   are no more Extension Headers left to be processed.
+
+   Recirculation is typically used on packet forwarding engines with
+   limited look-up capability, as it allows arbitrarily long header
+   chains to be processed without the complexity and cost associated
+   with packet forwarding engines which have deep look-up capabilities.
+   However, recirculation can impact the forwarding capacity of
+   hardware, as each packet will pass through the processing engine
+   multiple times.  Depending on configuration, the type of packets
+   being processed, and the hardware capabilities of the packet
+   forwarding engine, this may impact data-plane throughput performance
+   on the router.
+
+6.  Requirement to Process Layer-3/layer-4 information in Intermediate
     Systems
 
    The following subsections discuss some of reasons for which
    contemporary routers and middle-boxes may need to process Layer-3/
    layer-4 information to make a forwarding decision.
 
-5.1.  ECMP and Hash-based Load-Sharing
+6.1.  ECMP and Hash-based Load-Sharing
 
    In the case of ECMP (equal cost multi path) load sharing, the router
    on the sending side of the link needs to make a decision regarding
@@ -325,19 +499,18 @@ Internet-Draft           IPv6 Extension Headers           September 2020
    information increases the entropy of the hash, it is normally highly
    desirable to use it where possible.
 
+
+
+Gont, et al.             Expires March 31, 2021                 [Page 9]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
+
    We note that in the IPv6 world, flows are expected to be identified
    by means of the IPv6 Flow Label [RFC6437].  Thus, ECMP and Hash-based
    Load-Sharing would be possible without the need to process the entire
    IPv6 header chain to obtain upper-layer information to identify
    flows.  However, we note that for a long time many IPv6
-
-
-
-Gont, et al.             Expires March 11, 2021                 [Page 6]
-
-Internet-Draft           IPv6 Extension Headers           September 2020
-
-
    implementations failed to set the Flow Label, and ECMP and Hash-based
    Load-Sharing devices also did not employ the Flow Label for
    performing their task.
@@ -352,7 +525,7 @@ Internet-Draft           IPv6 Extension Headers           September 2020
    [Cunha-2020] -- possibly as a result of issues that have been found
    in host implementations and middle-boxes [Jaeggli-2018].
 
-5.2.  Enforcing infrastructure ACLs
+6.2.  Enforcing infrastructure ACLs
 
    Generally speaking, infrastructure ACLs (iACLs) drop unwanted packets
    destined to parts of a provider's infrastructure, because they are
@@ -369,7 +542,7 @@ Internet-Draft           IPv6 Extension Headers           September 2020
       permitted for established sessions and connection establishment),
       but do not permit other traffic from the same peer IP addresses.
 
-5.3.  DDoS Management and Customer Requests for Filtering
+6.3.  DDoS Management and Customer Requests for Filtering
 
    The case of customer DDoS protection and edge-to-core customer
    protection filters is similar in nature to the infrastructure ACL
@@ -380,26 +553,27 @@ Internet-Draft           IPv6 Extension Headers           September 2020
    protection to a network edge is often automated using Flowspec
    [RFC5575].
 
+
+
+
+
+Gont, et al.             Expires March 31, 2021                [Page 10]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
+
    For example, a web site which normally only handled traffic on TCP
    ports 80 and 443 could be subject to a volumetric DDoS attack using
    NTP and DNS packets with randomised source IP address, thereby
    rendering traditional [RFC5635] source-based real-time black hole
    mechanisms useless.  In this situation, DDoS protection ACLs could be
    configured to block all UDP traffic at the network edge without
-
-
-
-Gont, et al.             Expires March 11, 2021                 [Page 7]
-
-Internet-Draft           IPv6 Extension Headers           September 2020
-
-
    impairing the web server functionality in any way.  Thus, being able
    to block arbitrary protocols at the network edge can avoid DDoS-
    related problems both in the provider network and on the customer
    edge link.
 
-5.4.  Network Intrusion Detection and Prevention
+6.4.  Network Intrusion Detection and Prevention
 
    Network Intrusion Detection Systems (NIDS) examine network traffic
    and try to identify traffic patterns that can be correlated to
@@ -430,25 +604,26 @@ Internet-Draft           IPv6 Extension Headers           September 2020
    dropped at the network ingress point(s) of networks that deploy these
    systems.
 
-5.5.  Firewalling
+6.5.  Firewalling
 
    Firewalls enforce security policies by means of packet filtering.
    These systems generally inspect layer-3 and layer-4 traffic, and may
    also examine application-layer traffic flows.
 
-   As with NIDS/IPS (Section 5.4), use of IPv6 extension headers may
+
+
+
+Gont, et al.             Expires March 31, 2021                [Page 11]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
+
+   As with NIDS/IPS (Section 6.4), use of IPv6 extension headers may
    represent a challenge to network firewalls, since:
 
    o  Extension headers increase the complexity of resulting traffic,
       and the associated work and system requirements to process it (see
       e.g.  [Zack-FW-Benchmark]).
-
-
-
-Gont, et al.             Expires March 11, 2021                 [Page 8]
-
-Internet-Draft           IPv6 Extension Headers           September 2020
-
 
    o  Use of unknown extension headers may prevent an NIDS/IPS to
       process layer-4 information
@@ -466,17 +641,17 @@ Internet-Draft           IPv6 Extension Headers           September 2020
    not been explicitly allowed, packets employing IPv6 extension headers
    may be dropped by network firewalls.
 
-6.  Operational Implications
+7.  Operational Implications
 
-6.1.  Inability to Find Layer-4 Information
+7.1.  Inability to Find Layer-4 Information
 
-   As discussed in Section 5, contemporary routers and middle-boxes that
+   As discussed in Section 6, contemporary routers and middle-boxes that
    need to find the layer-4 header must process the entire IPv6
    extension header chain.  When such devices are unable to obtain the
    required information, they may simply resort to dropping the
    corresponding packets.
 
-6.2.  Route-Processor Protection
+7.2.  Route-Processor Protection
 
    Most contemporary routers have a fast hardware-assisted forwarding
    plane and a loosely coupled control plane, connected together with a
@@ -491,25 +666,25 @@ Internet-Draft           IPv6 Extension Headers           September 2020
    IPv6 packets containing this extension header.  Please see [RFC6192]
    for advice regarding protection of the router control plane.
 
-6.3.  Inability to Perform Fine-grained Filtering
+
+
+
+Gont, et al.             Expires March 31, 2021                [Page 12]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
+
+7.3.  Inability to Perform Fine-grained Filtering
 
    Some router implementations lack fine-grained filtering of IPv6
    extension headers.  For example, an operator may want to drop packets
    containing Routing Header Type 0 (RHT0) but may only be able to
    filter on the extension header type (Routing Header).  As a result,
    the operator may end up enforcing a more coarse filtering policy
-
-
-
-Gont, et al.             Expires March 11, 2021                 [Page 9]
-
-Internet-Draft           IPv6 Extension Headers           September 2020
-
-
    (e.g. "drop all packets containing a Routing Header" vs. "only drop
    packets that contain a Routing Header Type 0").
 
-6.4.  Security Concerns Associated with IPv6 Extension Headers
+7.4.  Security Concerns Associated with IPv6 Extension Headers
 
    The security implications of IPv6 Extension Headers generally fall
    into one or more of these categories:
@@ -544,9 +719,17 @@ Internet-Draft           IPv6 Extension Headers           September 2020
    in place (e.g., packet dropping and/or rate-limiting), an attacker
    could simply send a large amount of IPv6 traffic employing IPv6
    Extension Headers with the purpose of performing a Denial of Service
-   (DoS) attack (see Section 6 for further details).
+   (DoS) attack (see Section 7 for further details).
 
    NOTE:
+
+
+
+Gont, et al.             Expires March 31, 2021                [Page 13]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
+
       In the most trivial case, a packet that includes a Hop-by-Hop
       Options header might go through the slow forwarding path, and be
       processed by the router's CPU.  Another possible case might be
@@ -554,14 +737,6 @@ Internet-Draft           IPv6 Extension Headers           September 2020
       upper-layer information (e.g., upper layer protocol or TCP
       Destination Port), needs to process the entire IPv6 header chain
       (in order to find the required information), causing the packet to
-
-
-
-Gont, et al.             Expires March 11, 2021                [Page 10]
-
-Internet-Draft           IPv6 Extension Headers           September 2020
-
-
       be processed in the slow path [Cisco-EH-Cons].  We note that, for
       obvious reasons, the aforementioned performance issues may affect
       other devices such as firewalls, Network Intrusion Detection
@@ -584,19 +759,19 @@ Internet-Draft           IPv6 Extension Headers           September 2020
    range from denial of service attacks to information leakage, as
    discussed in [RFC7739], [Bonica-NANOG58] and [Atlasis2012]).
 
-7.  IANA Considerations
+8.  IANA Considerations
 
    There are no IANA registries within this document.  The RFC-Editor
    can remove this section before publication of this document as an
    RFC.
 
-8.  Security Considerations
+9.  Security Considerations
 
    The security implications of IPv6 extension headers are discussed in
-   Section 6.4.  This document does not introduce any new security
+   Section 7.4.  This document does not introduce any new security
    issues.
 
-9.  Acknowledgements
+10.  Acknowledgements
 
    The authors would like to thank (in alphabetical order) Mikael
    Abrahamsson, Fred Baker, Brian Carpenter, Tim Chown, Owen DeLong, Tom
@@ -604,23 +779,22 @@ Internet-Draft           IPv6 Extension Headers           September 2020
    Jingrong Xie, and Andrew Yourtchenko, for providing valuable comments
    on earlier versions of this document.
 
+
+
+Gont, et al.             Expires March 31, 2021                [Page 14]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
+
    Fernando Gont would like to thank Jan Zorz / Go6 Lab
    <https://go6lab.si/>, Jared Mauch, and Sander Steffann
    <https://steffann.nl/>, for providing access to systems and networks
    that were employed to perform experiments and measurements involving
    packets with IPv6 Extension Headers.
 
+11.  References
 
-
-
-Gont, et al.             Expires March 11, 2021                [Page 11]
-
-Internet-Draft           IPv6 Extension Headers           September 2020
-
-
-10.  References
-
-10.1.  Normative References
+11.1.  Normative References
 
    [RFC2460]  Deering, S. and R. Hinden, "Internet Protocol, Version 6
               (IPv6) Specification", RFC 2460, DOI 10.17487/RFC2460,
@@ -659,22 +833,20 @@ Internet-Draft           IPv6 Extension Headers           September 2020
               DOI 10.17487/RFC8200, July 2017,
               <https://www.rfc-editor.org/info/rfc8200>.
 
-   [RFC8504]  Chown, T., Loughney, J., and T. Winters, "IPv6 Node
-              Requirements", BCP 220, RFC 8504, DOI 10.17487/RFC8504,
-              January 2019, <https://www.rfc-editor.org/info/rfc8504>.
 
 
 
 
-
-
-
-Gont, et al.             Expires March 11, 2021                [Page 12]
+Gont, et al.             Expires March 31, 2021                [Page 15]
 
 Internet-Draft           IPv6 Extension Headers           September 2020
 
 
-10.2.  Informative References
+   [RFC8504]  Chown, T., Loughney, J., and T. Winters, "IPv6 Node
+              Requirements", BCP 220, RFC 8504, DOI 10.17487/RFC8504,
+              January 2019, <https://www.rfc-editor.org/info/rfc8504>.
+
+11.2.  Informative References
 
    [APNIC-Scudder]
               Scudder, J., "Modern router architecture and IPv6",  APNIC
@@ -701,9 +873,9 @@ Internet-Draft           IPv6 Extension Headers           September 2020
               Schaefer-briefings-Evasion-of-HighEnd-IPS-Devices-wp.pdf>.
 
    [Bonica-NANOG58]
-              Bonica, R., "IPv6 Extension Headers in the Real World
-              v2.0",  NANOG 58. New Orleans, Louisiana, USA. June 3-5,
-              2013, <https://www.nanog.org/sites/default/files/
+              Bonica, R., "IPV6 FRAGMENTATION: The Case For
+              Deprecation",  NANOG 58. New Orleans, Louisiana, USA. June
+              3-5, 2013, <https://www.nanog.org/sites/default/files/
               mon.general.fragmentation.bonica.pdf>.
 
    [Cisco-EH-Cons]
@@ -721,11 +893,7 @@ Internet-Draft           IPv6 Extension Headers           September 2020
 
 
 
-
-
-
-
-Gont, et al.             Expires March 11, 2021                [Page 13]
+Gont, et al.             Expires March 31, 2021                [Page 16]
 
 Internet-Draft           IPv6 Extension Headers           September 2020
 
@@ -772,25 +940,19 @@ Internet-Draft           IPv6 Extension Headers           September 2020
               <https://www.cmand.org/workshops/202006-v6/
               slides/2020-06-16-xtn-hdrs.pdf>.
 
-   [I-D.ietf-intarea-frag-fragile]
-              Bonica, R., Baker, F., Huston, G., Hinden, R., Troan, O.,
-              and F. Gont, "IP Fragmentation Considered Fragile", draft-
-              ietf-intarea-frag-fragile-17 (work in progress), September
-              2019.
-
-
-
-
-Gont, et al.             Expires March 11, 2021                [Page 14]
-
-Internet-Draft           IPv6 Extension Headers           September 2020
-
-
    [I-D.ietf-opsec-ipv6-eh-filtering]
               Gont, F. and W. LIU, "Recommendations on the Filtering of
               IPv6 Packets Containing IPv6 Extension Headers", draft-
               ietf-opsec-ipv6-eh-filtering-06 (work in progress), July
               2018.
+
+
+
+
+Gont, et al.             Expires March 31, 2021                [Page 17]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
 
    [I-D.kampanakis-6man-ipv6-eh-parsing]
               Kampanakis, P., "Implementation Guidelines for parsing
@@ -831,22 +993,22 @@ Internet-Draft           IPv6 Extension Headers           September 2020
               DNS",  Firewall/IDS Evasion and Spoofing,
               <https://nmap.org/book/man-bypass-firewalls-ids.html>.
 
-
-
-
-
-
-
-Gont, et al.             Expires March 11, 2021                [Page 15]
-
-Internet-Draft           IPv6 Extension Headers           September 2020
-
-
    [PMTUD-Blackholes]
               De Boer, M. and J. Bosma, "Discovering Path MTU black
               holes on the Internet using RIPE Atlas", July 2012,
               <http://www.nlnetlabs.nl/downloads/publications/pmtu-
               black-holes-msc-thesis.pdf>.
+
+
+
+
+
+
+
+Gont, et al.             Expires March 31, 2021                [Page 18]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
 
    [RFC5575]  Marques, P., Sheth, N., Raszuk, R., Greene, B., Mauch, J.,
               and D. McPherson, "Dissemination of Flow Specification
@@ -886,23 +1048,23 @@ Internet-Draft           IPv6 Extension Headers           September 2020
               Identification Values", RFC 7739, DOI 10.17487/RFC7739,
               February 2016, <https://www.rfc-editor.org/info/rfc7739>.
 
-
-
-
-
-
-
-
-Gont, et al.             Expires March 11, 2021                [Page 16]
-
-Internet-Draft           IPv6 Extension Headers           September 2020
-
-
    [RFC7872]  Gont, F., Linkova, J., Chown, T., and W. Liu,
               "Observations on the Dropping of Packets with IPv6
               Extension Headers in the Real World", RFC 7872,
               DOI 10.17487/RFC7872, June 2016,
               <https://www.rfc-editor.org/info/rfc7872>.
+
+   [RFC8900]  Bonica, R., Baker, F., Huston, G., Hinden, R., Troan, O.,
+              and F. Gont, "IP Fragmentation Considered Fragile",
+              BCP 230, RFC 8900, DOI 10.17487/RFC8900, September 2020,
+              <https://www.rfc-editor.org/info/rfc8900>.
+
+
+
+Gont, et al.             Expires March 31, 2021                [Page 19]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
+
 
    [Zack-FW-Benchmark]
               Zack, E., "Firewall Security Assessment and Benchmarking
@@ -942,18 +1104,6 @@ Authors' Addresses
    Email: gert@space.net
 
 
-
-
-
-
-
-
-
-Gont, et al.             Expires March 11, 2021                [Page 17]
-
-Internet-Draft           IPv6 Extension Headers           September 2020
-
-
    Warren Kumari
    Google
    1600 Amphitheatre Parkway
@@ -961,6 +1111,15 @@ Internet-Draft           IPv6 Extension Headers           September 2020
    US
 
    Email: warren@kumari.net
+
+
+
+
+
+
+Gont, et al.             Expires March 31, 2021                [Page 20]
+
+Internet-Draft           IPv6 Extension Headers           September 2020
 
 
    Geoff Huston
@@ -1005,4 +1164,13 @@ Internet-Draft           IPv6 Extension Headers           September 2020
 
 
 
-Gont, et al.             Expires March 11, 2021                [Page 18]
+
+
+
+
+
+
+
+
+
+Gont, et al.             Expires March 31, 2021                [Page 21]
