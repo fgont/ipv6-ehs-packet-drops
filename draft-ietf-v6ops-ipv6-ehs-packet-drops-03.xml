@@ -206,10 +206,10 @@ IPv6 took a different approach to the IPv6 packet structure. Rather than employi
 
 <list style="symbols">
 
-<t><xref target="RFC8200"/> requires the entire IPv6 header chain to be contained in the first fragment of a packet, therefore limiting the IPv6 extension header chain to the size of the Path-MTU.
+<t><xref target="RFC8200"/> requires the entire IPv6 header chain to be contained in the first fragment of a packet, therefore limiting the IPv6 extension header chain to the size of the path MTU.
 </t>
 
-<t>Other than the Path-MTU constraints, there are no other limits to the number of IPv6 EHs that may be present in a packet. Therefore, there is no upper-limit regarding "how deep into the IPv6 packet" the upper-layer may be found.
+<t>Other than the path MTU constraints, there are no other limits to the number of IPv6 EHs that may be present in a packet. Therefore, there is no upper-limit regarding "how deep into the IPv6 packet" the upper-layer may be found.
 </t>
 
 <t>The only way for a node to obtain the upper-layer protocol
@@ -551,7 +551,7 @@ plane.
 <t>Providing support for better granularity in the specification of filters for IPv6 extension headers, such that filters for specific EH types and subtypes (e.g. RHT0 vs. RHT2) can be specified without affecting other extension header types/subtypes unnecessarily (please see <xref target="finer-grained"/>).</t>
 <t>Providing advice on the filtering of IPv6 packets that contain IPv6 extension headers (as in <xref target="I-D.ietf-opsec-ipv6-eh-filtering"/>).</t>
 
-<t>Enforcing a cap on the maximum length of an IPv6 EH chain (e.g., as proposed in <xref target="I-D.wkumari-long-headers"/>) should be evaluated. If not at the protocol specification level (i.e., "Standards Track"), such a cap could be recommended as operational advice of the form "IPv6 implementations are expected to support EH chains as long as the they fit in the Path-MTU for the corresponding packets (see <xref target="RFC7112"/>).
+<t>Enforcing a cap on the maximum length of an IPv6 EH chain (e.g., as proposed in <xref target="I-D.wkumari-long-headers"/>) should be evaluated. If not at the protocol specification level (i.e., "Standards Track"), such a cap could be recommended as operational advice of the form "IPv6 implementations are expected to support EH chains as long as the they fit in the path MTU for the corresponding packets (see <xref target="RFC7112"/>).
 </t>
 </list>
 </t>
