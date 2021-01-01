@@ -121,10 +121,11 @@ IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and p
 
 <!--
 <t>Discussions about the security and operational implications of IPv6 extension headers are a regular feature in IETF working groups and other places.  Often in these discussions, important security and operational issues are overlooked.</t>
--->
 
 <t>The authors of this document have been involved in numerous discussions about IPv6 extension headers (both within the IETF and in other fora), and have noticed that the security and operational implications associated with IPv6 EHs were unknown to the larger audience participating in these discussions.
 </t>
+-->
+
 
 <t>This document has the following goals:
 <list style="symbols">
