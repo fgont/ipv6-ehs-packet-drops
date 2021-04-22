@@ -114,7 +114,7 @@ This document summarizes the operational implications of IPv6 extension headers 
 
 <section title="Introduction" anchor="intro">
 <t>
-IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and provide support for core functionality such as IPv6 fragmentation. However, common implementation limitations suggest that EHs present a challenge for IPv6 packet routing equipment and middle-boxes, and evidence exists that IPv6 packets with EHs are intentionally dropped in the public Internet in some network deployments.
+IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and provide support for core functionality such as IPv6 fragmentation. However, common implementation limitations suggest that EHs present a challenge for IPv6 packet routing equipment and middle-boxes, and evidence exists that IPv6 packets with EHs are intentionally dropped in the public Internet in some circumstances.
 </t>
 
 
@@ -215,7 +215,7 @@ IPv6 took a different approach to the IPv6 packet structure. Rather than employi
 </section>
 
 <section title="Previous Work on IPv6 Extension Headers" anchor="previous-work">
-<t>Some of the operational implications of IPv6 Extension Headers have been discussed at the IETF:
+<t>Some of the operational and security implications of IPv6 Extension Headers have been discussed at the IETF:
 <list style="symbols">
 <t><xref target="I-D.taylor-v6ops-fragdrop"/> discusses a rationale for which operators drop IPv6 fragments.</t>
 <t> <xref target="I-D.wkumari-long-headers"/> discusses possible issues arising from "long" IPv6 header chains.</t>
@@ -261,11 +261,12 @@ IPv6 took a different approach to the IPv6 packet structure. Rather than employi
 
 <t>
 
-Most contemporary carrier-grade routers use dedicated hardware (e.g.,  ASICs or NPUs) to
-determine how to forward packets across their internal fabrics (see <xref target="IEPG94-Scudder"/> and <xref target="APNIC-Scudder"/> for details).  One of the
+Most contemporary carrier-grade routers use dedicated hardware, e.g. application-specific
+integrated circuits (ASICs) or network processing units (NPUs), to determine how to forward
+packets across their internal fabrics (see <xref target="IEPG94-Scudder"/> and <xref target="APNIC-Scudder"/> for details).  One of the
 common methods of handling next-hop lookup is to send a small portion of the
-ingress packet to a lookup engine with specialised hardware (e.g., ternary
-CAM or Reduced Latency DRAM) to determine the packet's next-hop.  Technical constraints
+ingress packet to a lookup engine with specialised hardware, e.g. ternary
+content addressable memory (TCAM) or Reduced Latency DRAM, to determine the packet's next-hop.  Technical constraints
 mean that there is a trade-off between the amount of data sent to the lookup
 engine and the overall packet forwarding rate of the lookup engine.  If more data is
 sent, the lookup engine can inspect further into the packet, but the overall
@@ -292,7 +293,7 @@ of header (Cisco ASR9000 Typhoon) or 384 bytes of header (Juniper MX Trio).
 </list>
 </t>
 
-      
+
 <t>If a hardware forwarding engine on a contemporary router cannot make a
 forwarding decision about a packet because critical information is not sent
 to the look-up engine, then the router will normally drop the packet. <xref target="inability"/> discusses some of the reasons for which a contemporary router might need to access layer-4 information to make a forwarding decision.</t>
@@ -314,7 +315,7 @@ connects the control plane to the forwarding plane.   Other platforms may have a
 If an IPv6 header chain is sufficiently long that it exceeds the
    packet look-up capacity of the router, the router might be unable to
    determine how the packet should be handled, and thus could resort to
-   dropping the packet. 
+   dropping the packet.
 
 </t>
 
@@ -358,7 +359,7 @@ router.
 
 <section title="ECMP and Hash-based Load-Sharing" anchor="ecmp-load-balancing">
 
-<t>In the case of ECMP (equal cost multi path) load sharing, the forwarding
+<t>In the case of equal cost multi-path (ECMP) load sharing, the forwarding
 router needs to make a decision regarding which of the links to
 use to forward a given packet.  Since round-robin usage of the links is usually
 avoided to prevent packet reordering, forwarding engines need to
@@ -378,6 +379,9 @@ further layer-4 src/dst port information.
 <t>
 Clearly, widespread support of <xref target="RFC6437"/> would relieve middle-boxes from having to process the entire IPv6 header chain, making Flow Label-based ECMP and Load-Sharing <xref target="RFC6438"/> feasible.
 </t>
+<t>
+If a forwarding router cannot determine consistent n-tuples for calculating flow hashes, data streams are more likely to end up being distributed unequally across ECMP and load-shared links.  This may lead to packet drops or reduced performance.
+</t>
 </section>
 
 
@@ -393,6 +397,12 @@ or layer-4 criteria to achieve a useful balance of protection and functionality.
  addresses for troubleshooting.</t>
  <t>Permit BGP sessions on the shared network of an exchange point (potentially differentiating between the amount of packets/seconds permitted for established sessions and connection establishment), but do not permit other traffic from the same peer IP addresses.</t>
 </list>
+</t>
+<t>
+If a forwarding router cannot determine consistent n-tuples for calculating flow hashes, data streams are more likely to end up being distributed unequally across ECMP and load-shared links.  This may lead to packet drops or reduced performance.
+</t>
+<t>
+If a network cannot deploy infrastructure ACLs, then the security of the network may be compromised due to having more potential attack vectors open.
 </t>
 </section>
 
@@ -440,7 +450,7 @@ network and on the customer edge link.
 
 <t>As with NIDS/IPS (<xref target="nids"/>), use of IPv6 extension headers can represent a challenge to network firewalls, since:
 <list style="symbols">
-<t>Extension headers increase the complexity of resulting traffic, and the associated work and system requirements to process it (see e.g., <xref target="Zack-FW-Benchmark"/>).</t>
+<t>Extension headers increase the complexity of resulting traffic, and the associated work and system requirements to process it, as outlined in <xref target="Zack-FW-Benchmark"/>.</t>
 <t>Use of unknown extension headers can prevent firewalls from processing layer-4 information.</t>
 <t>Use of IPv6 fragmentation requires a stateful fragment-reassembly operation, even for decoy traffic employing forged source addresses (see e.g., <xref target="nmap"/>).</t>
 </list>
@@ -448,11 +458,11 @@ network and on the customer edge link.
 
 <t>Additionally, a common firewall filtering policy is the so-called &quot;default deny&quot;, where all traffic is blocked (by default), and only expected traffic is added to an "allow/accept list".</t>
 
-
 <t>As a result, packets employing IPv6 extension headers are often
 dropped by network firewalls, either because of the challenges
 represented by extension headers or because the use of IPv6 extension
 headers has not been explicitly allowed.</t>
+<t>Note that although the data presented in <xref target="Zack-FW-Benchmark"/> were several years old at the time of publication of this document, many contemporary firewalls use comparable hardware and software architecture, and consequently the conclusions of this benchmark are still relevant, despite its age.</t>
 </section>
 
 </section>
@@ -567,7 +577,7 @@ plane.
 	<?rfc include="reference.RFC.6192" ?>
 	<?rfc include="reference.RFC.6437" ?>
 	<?rfc include="reference.RFC.6438" ?>
-	<?rfc include="reference.RFC.7098" ?>	
+	<?rfc include="reference.RFC.7098" ?>
 
 	<?rfc include="reference.RFC.7045" ?>
 
@@ -807,8 +817,8 @@ plane.
   </front>
 
   </reference>
-  
-  
+
+
     <reference anchor="Cisco-EH-Cons" target="http://www.cisco.com/en/US/technologies/tk648/tk872/technologies_white_paper0900aecd8054d37d.pdf">
   <front>
   <title>IPv6 Extension Headers Review and Considerations</title>
