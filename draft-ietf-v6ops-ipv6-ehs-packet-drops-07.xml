@@ -171,7 +171,7 @@ It is useful to compare the basic structure of IPv6 packets against that of IPv4
 
 
 <t>
-IPv6 took a different approach to the IPv6 packet structure. Rather than employing a variable-length header as IPv4 does, IPv6 employs a linked-list-like packet structure, where a mandatory fixed-length IPv6 header is followed by an arbitrary number of optional extension headers, with the upper-layer header being the last header in the IPv6 header chain. Each extension header typically specifies its length (unless it is implicit from the extension header type), and the "next header" type that follows in the IPv6 IPv6 header chain.
+IPv6 took a different approach to the IPv6 packet structure. Rather than employing a variable-length header as IPv4 does, IPv6 employs a linked-list-like packet structure, where a mandatory fixed-length IPv6 header is followed by an arbitrary number of optional extension headers, with the upper-layer header being the last header in the IPv6 header chain. Each extension header typically specifies its length (unless it is implicit from the extension header type), and the "next header" type that follows in the IPv6 header chain.
 </t>
 
 <t>
@@ -358,8 +358,8 @@ router.
 
 <section title="ECMP and Hash-based Load-Sharing" anchor="ecmp-load-balancing">
 
-<t>In the case of ECMP (equal cost multi path) load sharing, the router on
-the sending side of the link needs to make a decision regarding which of the links to
+<t>In the case of ECMP (equal cost multi path) load sharing, the forwarding
+router needs to make a decision regarding which of the links to
 use to forward a given packet.  Since round-robin usage of the links is usually
 avoided to prevent packet reordering, forwarding engines need to
 use a mechanism that will consistently forward the same data streams down
