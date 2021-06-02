@@ -12,7 +12,7 @@
 <rfc
 	ipr="trust200902"
 	category="info"
-	docName="draft-ietf-v6ops-ipv6-ehs-packet-drops-06">
+	docName="draft-ietf-v6ops-ipv6-ehs-packet-drops-07">
   <front>
     <title abbrev="IPv6 Extension Headers">Operational Implications of IPv6 Packets with Extension Headers</title>
 
@@ -114,7 +114,7 @@ This document summarizes the operational implications of IPv6 extension headers 
 
 <section title="Introduction" anchor="intro">
 <t>
-IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and provide support for core functionality such as IPv6 fragmentation. However, common implementation limitations suggest that EHs present a challenge for IPv6 packet routing equipment and middle-boxes, and evidence exists that IPv6 packets with EHs are intentionally dropped in the public Internet in some network deployments.
+IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and provide support for core functionality such as IPv6 fragmentation. However, common implementation limitations suggest that EHs present a challenge for IPv6 packet routing equipment and middle-boxes, and evidence exists that IPv6 packets with EHs are intentionally dropped in the public Internet in some circumstances.
 </t>
 
 
@@ -128,8 +128,10 @@ IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and p
 
 
 <t>
-<xref target="background"/> provides background information about the IPv6 packet structure and associated implications. <xref target="previous-work"/> of this document summarizes the previous work that has been carried out in the area of IPv6 extension headers. <xref target="pfe-constraints"/> discusses packet forwarding engine constraints in contemporary routers. <xref target="inability"/> discusses why contemporary routers and middle-boxes may need to access Layer-4 information to make a forwarding decision. Finally, <xref target="operational-implications"/> discusses the operational implications of IPv6 EHs. <!--Finally, <xref target="future-work"/> suggests a possible action plan for improving the state of affairs with respect to IPv6 extension headers. -->
+<xref target="background"/> provides background information about the IPv6 packet structure and associated implications. <xref target="previous-work"/> of this document summarizes the previous work that has been carried out in the area of IPv6 extension headers. <xref target="pfe-constraints"/> discusses packet forwarding engine constraints in contemporary routers. <xref target="inability"/> discusses why intermediate systems may need to access Layer-4 information to make a forwarding decision. Finally, <xref target="operational-implications"/> discusses the operational implications of IPv6 EHs. <!--Finally, <xref target="future-work"/> suggests a possible action plan for improving the state of affairs with respect to IPv6 extension headers. -->
 </t>
+<t>
+This document uses the term "intermediate system" to describe both routers and middle-boxes, when there is no need to distinguish between the two and where the important issue is that the device being discussed forwards packets.</t>
 </section>
 
 <section title="Disclaimer" anchor="disclaimer">
@@ -171,7 +173,7 @@ It is useful to compare the basic structure of IPv6 packets against that of IPv4
 
 
 <t>
-IPv6 took a different approach to the IPv6 packet structure. Rather than employing a variable-length header as IPv4 does, IPv6 employs a linked-list-like packet structure, where a mandatory fixed-length IPv6 header is followed by an arbitrary number of optional extension headers, with the upper-layer header being the last header in the IPv6 header chain. Each extension header typically specifies its length (unless it is implicit from the extension header type), and the "next header" type that follows in the IPv6 IPv6 header chain.
+IPv6 took a different approach to the IPv6 packet structure. Rather than employing a variable-length header as IPv4 does, IPv6 employs a linked-list-like packet structure, where a mandatory fixed-length IPv6 header is followed by an arbitrary number of optional extension headers, with the upper-layer header being the last header in the IPv6 header chain. Each extension header typically specifies its length (unless it is implicit from the extension header type), and the "next header" type that follows in the IPv6 header chain.
 </t>
 
 <t>
@@ -215,7 +217,7 @@ IPv6 took a different approach to the IPv6 packet structure. Rather than employi
 </section>
 
 <section title="Previous Work on IPv6 Extension Headers" anchor="previous-work">
-<t>Some of the operational implications of IPv6 Extension Headers have been discussed at the IETF:
+<t>Some of the operational and security implications of IPv6 Extension Headers have been discussed at the IETF:
 <list style="symbols">
 <t><xref target="I-D.taylor-v6ops-fragdrop"/> discusses a rationale for which operators drop IPv6 fragments.</t>
 <t> <xref target="I-D.wkumari-long-headers"/> discusses possible issues arising from "long" IPv6 header chains.</t>
@@ -261,11 +263,13 @@ IPv6 took a different approach to the IPv6 packet structure. Rather than employi
 
 <t>
 
-Most contemporary carrier-grade routers use dedicated hardware (e.g.,  ASICs or NPUs) to
-determine how to forward packets across their internal fabrics (see <xref target="IEPG94-Scudder"/> and <xref target="APNIC-Scudder"/> for details).  One of the
+Most contemporary carrier-grade routers use dedicated hardware, e.g. application-specific
+integrated circuits (ASICs) or network processing units (NPUs), to determine how to forward
+packets across their internal fabrics (see <xref target="IEPG94-Scudder"/> and <xref target="APNIC-Scudder"/> for details).  One of the
 common methods of handling next-hop lookup is to send a small portion of the
-ingress packet to a lookup engine with specialised hardware (e.g., ternary
-CAM or Reduced Latency DRAM) to determine the packet's next-hop.  Technical constraints
+ingress packet to a lookup engine with specialised hardware, e.g. ternary
+content-addressable memory (TCAM) or reduced latency dynamic random-access memory
+(RLDRAM), to determine the packet's next-hop.  Technical constraints
 mean that there is a trade-off between the amount of data sent to the lookup
 engine and the overall packet forwarding rate of the lookup engine.  If more data is
 sent, the lookup engine can inspect further into the packet, but the overall
@@ -292,7 +296,7 @@ of header (Cisco ASR9000 Typhoon) or 384 bytes of header (Juniper MX Trio).
 </list>
 </t>
 
-      
+
 <t>If a hardware forwarding engine on a contemporary router cannot make a
 forwarding decision about a packet because critical information is not sent
 to the look-up engine, then the router will normally drop the packet. <xref target="inability"/> discusses some of the reasons for which a contemporary router might need to access layer-4 information to make a forwarding decision.</t>
@@ -314,7 +318,7 @@ connects the control plane to the forwarding plane.   Other platforms may have a
 If an IPv6 header chain is sufficiently long that it exceeds the
    packet look-up capacity of the router, the router might be unable to
    determine how the packet should be handled, and thus could resort to
-   dropping the packet. 
+   dropping the packet.
 
 </t>
 
@@ -351,15 +355,15 @@ router.
 
 <section title="Requirement to Process Layer-3/layer-4 information in Intermediate Systems" anchor="inability">
 
-<t>The following subsections discuss some of the reasons for which contemporary routers and middle-boxes may need to process Layer-3/layer-4 information to make a forwarding decision.</t>
+<t>The following subsections discuss some of the reasons for which intermediate systems may need to process Layer-3/layer-4 information to make a forwarding decision.</t>
 
 
 
 
 <section title="ECMP and Hash-based Load-Sharing" anchor="ecmp-load-balancing">
 
-<t>In the case of ECMP (equal cost multi path) load sharing, the router on
-the sending side of the link needs to make a decision regarding which of the links to
+<t>In the case of equal cost multi-path (ECMP) load sharing, the forwarding
+router needs to make a decision regarding which of the links to
 use to forward a given packet.  Since round-robin usage of the links is usually
 avoided to prevent packet reordering, forwarding engines need to
 use a mechanism that will consistently forward the same data streams down
@@ -370,13 +374,16 @@ typically use the src/dst MAC address, src/dst IP address, and if possible
 further layer-4 src/dst port information.
 </t>
 
-<t>In the IPv6 world, flows are expected to be identified by means of the IPv6 Flow Label <xref target="RFC6437"/>. Thus, ECMP and Hash-based Load-Sharing should be possible without the need to process the entire IPv6 header chain to obtain upper-layer information to identify flows. <xref target="RFC7098"/> discusses how the IPv6 FLow Label can used to enhance layer 3/4 load distribution and balancing for large server farms.
+<t>In the IPv6 world, flows are expected to be identified by means of the IPv6 Flow Label <xref target="RFC6437"/>. Thus, ECMP and Hash-based Load-Sharing should be possible without the need to process the entire IPv6 header chain to obtain upper-layer information to identify flows. <xref target="RFC7098"/> discusses how the IPv6 Flow Label can used to enhance layer 3/4 load distribution and balancing for large server farms.
 </t>
 
 <t>Historically, many IPv6 implementations failed to set the Flow Label, and hash-based ECMP/load-sharing devices also did not employ the Flow Label for performing their task. While support of <xref target="RFC6437"/> is currently widespread for current versions of all popular host implementations, there is still only marginal usage of the IPv6 Flow Label for ECMP and load balancing <xref target="Cunha-2020"/>. A contributing factor could be the issues that have been found in host implementations and middle-boxes <xref target="Jaeggli-2018"/>.</t>
 
 <t>
 Clearly, widespread support of <xref target="RFC6437"/> would relieve middle-boxes from having to process the entire IPv6 header chain, making Flow Label-based ECMP and Load-Sharing <xref target="RFC6438"/> feasible.
+</t>
+<t>
+If a forwarding router cannot determine consistent n-tuples for calculating flow hashes, data streams are more likely to end up being distributed unequally across ECMP and load-shared links.  This may lead to packet drops or reduced performance.
 </t>
 </section>
 
@@ -385,7 +392,7 @@ Clearly, widespread support of <xref target="RFC6437"/> would relieve middle-box
 <section title="Enforcing infrastructure ACLs" anchor="enforcing-infrastructure-acls">
 
 <t>Infrastructure ACLs (iACLs) drop unwanted packets destined
-to a network's infrastructure IP addresses.  Typically, iACLs are deployed because external direct access to a network's infrastructure addresses is operationally unnecessary, and can be used for attacks of different sorts against router
+to a network's infrastructure.  Typically, iACLs are deployed because external direct access to a network's infrastructure addresses is operationally unnecessary, and can be used for attacks of different sorts against router
 control planes.  To this end, traffic usually needs to be differentiated on the basis of layer-3
 or layer-4 criteria to achieve a useful balance of protection and functionality.  For example, an infrastructure may be configured with the following policy:
 <list style="symbols">
@@ -393,6 +400,12 @@ or layer-4 criteria to achieve a useful balance of protection and functionality.
  addresses for troubleshooting.</t>
  <t>Permit BGP sessions on the shared network of an exchange point (potentially differentiating between the amount of packets/seconds permitted for established sessions and connection establishment), but do not permit other traffic from the same peer IP addresses.</t>
 </list>
+</t>
+<t>
+If a forwarding router cannot determine consistent n-tuples for calculating flow hashes, data streams are more likely to end up being distributed unequally across ECMP and load-shared links.  This may lead to packet drops or reduced performance.
+</t>
+<t>
+If a network cannot deploy infrastructure ACLs, then the security of the network may be compromised due to having more potential attack vectors open.
 </t>
 </section>
 
@@ -440,7 +453,7 @@ network and on the customer edge link.
 
 <t>As with NIDS/IPS (<xref target="nids"/>), use of IPv6 extension headers can represent a challenge to network firewalls, since:
 <list style="symbols">
-<t>Extension headers increase the complexity of resulting traffic, and the associated work and system requirements to process it (see e.g., <xref target="Zack-FW-Benchmark"/>).</t>
+<t>Extension headers increase the complexity of resulting traffic, and the associated work and system requirements to process it, as outlined in <xref target="Zack-FW-Benchmark"/>.</t>
 <t>Use of unknown extension headers can prevent firewalls from processing layer-4 information.</t>
 <t>Use of IPv6 fragmentation requires a stateful fragment-reassembly operation, even for decoy traffic employing forged source addresses (see e.g., <xref target="nmap"/>).</t>
 </list>
@@ -448,17 +461,17 @@ network and on the customer edge link.
 
 <t>Additionally, a common firewall filtering policy is the so-called &quot;default deny&quot;, where all traffic is blocked (by default), and only expected traffic is added to an "allow/accept list".</t>
 
-
 <t>As a result, packets employing IPv6 extension headers are often
 dropped by network firewalls, either because of the challenges
 represented by extension headers or because the use of IPv6 extension
 headers has not been explicitly allowed.</t>
+<t>Note that although the data presented in <xref target="Zack-FW-Benchmark"/> were several years old at the time of publication of this document, many contemporary firewalls use comparable hardware and software architecture, and consequently the conclusions of this benchmark are still relevant, despite its age.</t>
 </section>
 
 </section>
 
 
-<section title="Operational Implications" anchor="operational-implications">
+<section title="Operational and Security Implications" anchor="operational-implications">
 
 <!--
 [fgont] Isn't this already discussed in the "ddos-management" section?
@@ -480,13 +493,13 @@ overload the internal link connecting the forwarding plane to the control
 plane.
 </t>
 
-<t>The Hop-by-Hop Options header has been particularly challenging since in most circumstances, the corresponding packet is punted to the control plane for processing. As a result, many operators currently drop IPv6 packets containing this extension header. <xref target="RFC6192"/> provides advice regarding protection of a router's control plane.</t>
+<t>The Hop-by-Hop Options header has been particularly challenging since in most circumstances, the corresponding packet is punted to the control plane for processing. As a result, many operators drop <xref target="RFC7872"/> IPv6 packets containing this extension header. <xref target="RFC6192"/> provides advice regarding protection of a router's control plane.</t>
 </section>
 
 
 <section title="Inability to Perform Fine-grained Filtering" anchor="finer-grained">
 
-<t>Some router implementations do not have support for fine-grained filtering of IPv6 extension headers. For example, an operator that wishes to drop packets containing Routing Header Type 0 (RHT0), may only be able to filter on the extension header type (Routing Header). This could result in an operator enforcing a more coarse filtering policy (e.g., "drop all packets containing a Routing Header" vs. "only drop packets that contain a Routing Header Type 0").
+<t>Some intermediate systems do not have support for fine-grained filtering of IPv6 extension headers. For example, an operator that wishes to drop packets containing Routing Header Type 0 (RHT0), may only be able to filter on the extension header type (Routing Header). This could result in an operator enforcing a more coarse filtering policy (e.g., "drop all packets containing a Routing Header" vs. "only drop packets that contain a Routing Header Type 0").
 </t>
 <!--
 <t>Some router implementations lack fine-grained filtering of IPv6 extension headers. For example, an operator may want to drop packets containing Routing Header Type 0 (RHT0) but may only be able to filter on the extension header type (Routing Header). As a result, the operator may end up enforcing a more coarse filtering policy (e.g., "drop all packets containing a Routing Header" vs. "only drop packets that contain a Routing Header Type 0").
@@ -509,14 +522,14 @@ plane.
 </t>
 
 
-<t>Sometimes packets with IPv6 Extension Headers can impact throughput performance on routers and middleboxes. Unless appropriate mitigations are put in place (e.g., packet dropping and/or rate-limiting), an attacker could simply send a large amount of IPv6 traffic employing IPv6 Extension Headers with the purpose of performing a Denial of Service (DoS) attack (see <xref target="operational-implications"/> for further details).
+<t>Sometimes packets with IPv6 Extension Headers can impact throughput performance on intermediate systems. Unless appropriate mitigations are put in place (e.g., packet dropping and/or rate-limiting), an attacker could simply send a large amount of IPv6 traffic employing IPv6 Extension Headers with the purpose of performing a Denial of Service (DoS) attack (see <xref target="recirculation"/> and <xref target="operational-implications"/> for further details).
 <list style="hanging">
 <t hangText="NOTE:"><vspace blankLines="0"/>In the most trivial case, a packet that includes a Hop-by-Hop Options header might go through the slow forwarding path, to be processed by the router's CPU. Alternatively, a router configured to enforce an ACL based on upper-layer information (e.g., upper layer protocol or TCP Destination Port) may need to process the entire IPv6 header chain in order to find the required information, thereby causing the packet to be processed in the slow path <xref target="Cisco-EH-Cons"/>. We note that, for obvious reasons, the aforementioned performance issues can affect other devices such as firewalls, Network Intrusion Detection Systems (NIDS), etc. <xref target="Zack-FW-Benchmark"/>. The extent to which performance is affected on these devices is implementation-dependent.
 </t>
 </list>
 </t>
 
-<t>IPv6 implementations, like all other software, tend to mature with time and wide-scale deployment. While the IPv6 protocol itself has existed for over 20 years, serious bugs related to IPv6 Extension Header processing continue to be discovered (see e.g., <xref target="Cisco-Frag1"/>, <xref target="Cisco-Frag2"/>, <xref target="Microsoft-SA"/>, and <xref target="FreeBSD-SA"/>).  Because there is currently little operational reliance on IPv6 Extension headers, the corresponding code paths are rarely exercised, and there is the potential for bugs that still remain to be discovered in some implementations.</t>
+<t>IPv6 implementations, like all other software, tend to mature with time and wide-scale deployment. While the IPv6 protocol itself has existed for over 20 years, serious bugs related to IPv6 Extension Header processing continue to be discovered (see e.g., <xref target="Cisco-Frag2"/>, <xref target="Microsoft-SA"/>, and <xref target="FreeBSD-SA"/>).  Because there is currently little operational reliance on IPv6 Extension headers, the corresponding code paths are rarely exercised, and there is the potential for bugs that still remain to be discovered in some implementations.</t>
 
 <t>IPv6 Fragment Headers are employed to allow fragmentation of IPv6 packets. While many of the security implications of the fragmentation / reassembly mechanism are known from the IPv4 world, several related issues have crept into IPv6 implementations. These range from denial of service attacks to information leakage, as discussed in <xref target="RFC7739"/>, <xref target="Bonica-NANOG58"/> and <xref target="Atlasis2012"/>).
 </t>
@@ -567,7 +580,7 @@ plane.
 	<?rfc include="reference.RFC.6192" ?>
 	<?rfc include="reference.RFC.6437" ?>
 	<?rfc include="reference.RFC.6438" ?>
-	<?rfc include="reference.RFC.7098" ?>	
+	<?rfc include="reference.RFC.7098" ?>
 
 	<?rfc include="reference.RFC.7045" ?>
 
@@ -760,21 +773,6 @@ plane.
 		<seriesInfo name="" value="NANOG 58. New Orleans, Louisiana, USA. June 3-5, 2013"/>
   </reference>
 
-
-
-
-
-    <reference anchor="Cisco-Frag1" target="http://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20130925-ipv6vfr">
-  <front>
-  <title>Cisco IOS Software IPv6 Virtual Fragmentation Reassembly Denial of Service Vulnerability</title>
-  <author>
-				<organization>Cisco</organization>
-  </author>
-  <date month="September" year="2013"/>
-  </front>
-
-  </reference>
-
     <reference anchor="Cisco-Frag2" target="http://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20150611-iosxr">
   <front>
   <title>Cisco IOS XR Software Crafted IPv6 Packet Denial of Service Vulnerability</title>
@@ -807,8 +805,8 @@ plane.
   </front>
 
   </reference>
-  
-  
+
+
     <reference anchor="Cisco-EH-Cons" target="http://www.cisco.com/en/US/technologies/tk648/tk872/technologies_white_paper0900aecd8054d37d.pdf">
   <front>
   <title>IPv6 Extension Headers Review and Considerations</title>
