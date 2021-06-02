@@ -130,6 +130,10 @@ IPv6 Extension Headers (EHs) allow for the extension of the IPv6 protocol, and p
 <t>
 <xref target="background"/> provides background information about the IPv6 packet structure and associated implications. <xref target="previous-work"/> of this document summarizes the previous work that has been carried out in the area of IPv6 extension headers. <xref target="pfe-constraints"/> discusses packet forwarding engine constraints in contemporary routers. <xref target="inability"/> discusses why intermediate systems may need to access Layer-4 information to make a forwarding decision. Finally, <xref target="operational-implications"/> discusses the operational implications of IPv6 EHs. <!--Finally, <xref target="future-work"/> suggests a possible action plan for improving the state of affairs with respect to IPv6 extension headers. -->
 </t>
+
+</section>
+
+<section title="Terminology">
 <t>
 This document uses the term "intermediate system" to describe both routers and middle-boxes, when there is no need to distinguish between the two and where the important issue is that the device being discussed forwards packets.</t>
 </section>
@@ -480,7 +484,7 @@ headers has not been explicitly allowed.</t>
 
 -->
 <section title="Inability to Find Layer-4 Information" anchor="inability-layer-4-info">
-<t>As discussed in <xref target="inability"/>, routers and middle-boxes that need to find the layer-4 header must process the entire IPv6 extension header chain.  When such devices are unable to obtain the required information, the forwarding device has the option to drop the packet unconditionally, forward the packet unconditionally, or process the packet outside the normal forwarding path.  Forwarding packets unconditionally will usually allow for the circumvention of security controls (see e.g., <xref target="firewalls"/>), while processing packets outside of the normal forwarding path will usually open the door to DoS attacks (see e.g., <xref target="pfe-constraints"/>). Thus, in these scenarios, devices often simply resort to dropping such packets unconditionally.
+<t>As discussed in <xref target="inability"/>, intermediate systems that need to find the layer-4 header must process the entire IPv6 extension header chain.  When such devices are unable to obtain the required information, the forwarding device has the option to drop the packet unconditionally, forward the packet unconditionally, or process the packet outside the normal forwarding path.  Forwarding packets unconditionally will usually allow for the circumvention of security controls (see e.g., <xref target="firewalls"/>), while processing packets outside of the normal forwarding path will usually open the door to DoS attacks (see e.g., <xref target="pfe-constraints"/>). Thus, in these scenarios, devices often simply resort to dropping such packets unconditionally.
 </t>
 </section>
 
@@ -529,7 +533,7 @@ plane.
 </list>
 </t>
 
-<t>IPv6 implementations, like all other software, tend to mature with time and wide-scale deployment. While the IPv6 protocol itself has existed for over 20 years, serious bugs related to IPv6 Extension Header processing continue to be discovered (see e.g., <xref target="Cisco-Frag2"/>, <xref target="Microsoft-SA"/>, and <xref target="FreeBSD-SA"/>).  Because there is currently little operational reliance on IPv6 Extension headers, the corresponding code paths are rarely exercised, and there is the potential for bugs that still remain to be discovered in some implementations.</t>
+<t>IPv6 implementations, like all other software, tend to mature with time and wide-scale deployment. While the IPv6 protocol itself has existed for over 20 years, serious bugs related to IPv6 Extension Header processing continue to be discovered (see e.g., <xref target="Cisco-Frag"/>, <xref target="Microsoft-SA"/>, and <xref target="FreeBSD-SA"/>).  Because there is currently little operational reliance on IPv6 Extension headers, the corresponding code paths are rarely exercised, and there is the potential for bugs that still remain to be discovered in some implementations.</t>
 
 <t>IPv6 Fragment Headers are employed to allow fragmentation of IPv6 packets. While many of the security implications of the fragmentation / reassembly mechanism are known from the IPv4 world, several related issues have crept into IPv6 implementations. These range from denial of service attacks to information leakage, as discussed in <xref target="RFC7739"/>, <xref target="Bonica-NANOG58"/> and <xref target="Atlasis2012"/>).
 </t>
@@ -773,7 +777,7 @@ plane.
 		<seriesInfo name="" value="NANOG 58. New Orleans, Louisiana, USA. June 3-5, 2013"/>
   </reference>
 
-    <reference anchor="Cisco-Frag2" target="http://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20150611-iosxr">
+    <reference anchor="Cisco-Frag" target="http://tools.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-20150611-iosxr">
   <front>
   <title>Cisco IOS XR Software Crafted IPv6 Packet Denial of Service Vulnerability</title>
   <author>
