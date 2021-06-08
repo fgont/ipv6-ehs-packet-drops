@@ -366,8 +366,8 @@ router.
 
 <section title="ECMP and Hash-based Load-Sharing" anchor="ecmp-load-balancing">
 
-<t>In the case of equal cost multi-path (ECMP) load sharing, the forwarding
-router needs to make a decision regarding which of the links to
+<t>In the case of equal cost multi-path (ECMP) load sharing, the intermediate system
+needs to make a decision regarding which of its interfaces to
 use to forward a given packet.  Since round-robin usage of the links is usually
 avoided to prevent packet reordering, forwarding engines need to
 use a mechanism that will consistently forward the same data streams down
@@ -384,10 +384,10 @@ further layer-4 src/dst port information.
 <t>Historically, many IPv6 implementations failed to set the Flow Label, and hash-based ECMP/load-sharing devices also did not employ the Flow Label for performing their task. While support of <xref target="RFC6437"/> is currently widespread for current versions of all popular host implementations, there is still only marginal usage of the IPv6 Flow Label for ECMP and load balancing <xref target="Cunha-2020"/>. A contributing factor could be the issues that have been found in host implementations and middle-boxes <xref target="Jaeggli-2018"/>.</t>
 
 <t>
-Clearly, widespread support of <xref target="RFC6437"/> would relieve middle-boxes from having to process the entire IPv6 header chain, making Flow Label-based ECMP and Load-Sharing <xref target="RFC6438"/> feasible.
+Clearly, widespread support of <xref target="RFC6437"/> would relieve intermediate systems from having to process the entire IPv6 header chain, making Flow Label-based ECMP and Load-Sharing <xref target="RFC6438"/> feasible.
 </t>
 <t>
-If a forwarding router cannot determine consistent n-tuples for calculating flow hashes, data streams are more likely to end up being distributed unequally across ECMP and load-shared links.  This may lead to packet drops or reduced performance.
+If an intermediate system cannot determine consistent n-tuples for calculating flow hashes, data streams are more likely to end up being distributed unequally across ECMP and load-shared links.  This may lead to packet drops or reduced performance.
 </t>
 </section>
 
