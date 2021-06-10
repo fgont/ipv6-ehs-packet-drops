@@ -497,7 +497,7 @@ overload the internal link connecting the forwarding plane to the control
 plane.
 </t>
 
-<t>The Hop-by-Hop Options header has been particularly challenging since in most circumstances, the corresponding packet is punted to the control plane for processing. As a result, many operators drop <xref target="RFC7872"/> IPv6 packets containing this extension header. <xref target="RFC6192"/> provides advice regarding protection of a router's control plane.</t>
+<t>The Hop-by-Hop Options header has been particularly challenging since in most circumstances, the corresponding packet is punted to the control plane for processing. As a result, many operators drop IPv6 packets containing this extension header <xref target="RFC7872"/>. <xref target="RFC6192"/> provides advice regarding protection of a router's control plane.</t>
 </section>
 
 
