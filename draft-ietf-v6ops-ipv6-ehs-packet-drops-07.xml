@@ -419,7 +419,7 @@ filters is similar in nature to the iACL protection.  Similar
 to iACL protection, layer-4 ACLs generally need to be applied as close to the
 edge of the network as possible, even though the intent is usually to protect the
 customer edge rather than the provider core.  Application of layer-4 DDoS protection
-to a network edge is often automated using Flowspec <xref target="RFC5575"/>.
+to a network edge is often automated using Flowspec <xref target="RFC8955"/> <xref target="RFC8956"/>.
 </t>
 
 <t>For example, a web site that normally only handled traffic on TCP ports
@@ -578,7 +578,6 @@ plane.
 
   <references title='Informative References'>
 	<?rfc include="reference.RFC.2460" ?>
-	<?rfc include="reference.RFC.5575" ?>
 	<?rfc include="reference.RFC.5635" ?>
 
 	<?rfc include="reference.RFC.6192" ?>
@@ -600,7 +599,8 @@ plane.
 	<?rfc include="reference.I-D.ietf-opsec-ipv6-eh-filtering" ?>
 	<?rfc include="reference.RFC.8900" ?>
 
-
+	<?rfc include="reference.RFC.8955" ?>
+	<?rfc include="reference.RFC.8956" ?>
 
     <reference anchor="Atlasis2014" target="http://www.insinuator.net/2014/05/a-novel-way-of-abusing-ipv6-extension-headers-to-evade-ipv6-security-devices/">
   <front>
