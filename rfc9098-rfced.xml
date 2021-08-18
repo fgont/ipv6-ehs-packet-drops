@@ -377,7 +377,7 @@ to a network edge is often automated using BGP Flowspec <xref target="RFC8955" f
         <t>For example, a website that normally only handles traffic on TCP ports
 80 and 443 could be subject to a volumetric DDoS attack using NTP and DNS
 packets with a randomized source IP address, thereby rendering
-<xref target="RFC5635"/> source-based remote triggered black hole
+source-based remote triggered black hole <xref target="RFC5635"/>
 mechanisms useless.  In this situation, ACLs that provide DDoS protection could be configured to
 block all UDP traffic at the network edge without impairing the web server
 functionality in any way.  Thus, being able to block arbitrary
@@ -395,7 +395,7 @@ network and on the customer edge link.
 </t>
         <ul spacing="normal">
           <li>Extension headers increase the complexity of resulting traffic and the associated work and system requirements to process it.</li>
-          <li>Use of unknown extension headers can prevent a NIDS or IPS from processing layer-4 information.</li>
+          <li>Use of unknown extension headers can prevent a NIDS or IPS from processing Layer 4 information.</li>
           <li>Use of IPv6 fragmentation requires a stateful fragment-reassembly operation, even for decoy traffic employing forged source addresses (see, e.g., <xref target="nmap" format="default"/>).</li>
         </ul>
         <t>As a result, in order to increase the efficiency or effectiveness of these systems, packets employing IPv6 extension headers are often dropped at the network ingress point(s) of networks that deploy these systems.</t>
