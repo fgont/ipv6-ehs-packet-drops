@@ -103,8 +103,7 @@ IPv6 extension headers (EHs) allow for the extension of the IPv6 protocol and pr
         <li>Highlight operational issues associated with IPv6 extension headers, such that those issues are considered in IETF standardization efforts.</li>
       </ul>
       <t>
-<!-- [fgont] Should "the previous work" actually be "previous work" ? -->
-<xref target="background" format="default"/> of this document provides background information about the IPv6 packet structure and associated implications. <xref target="previous-work" format="default"/> summarizes the previous work that has been carried out in the area of IPv6 extension headers. <xref target="pfe-constraints" format="default"/> discusses packet-forwarding engine constraints in contemporary routers. <xref target="inability" format="default"/> discusses why intermediate systems may need to access Layer 4 information to make a forwarding decision. Finally, <xref target="operational-implications" format="default"/> discusses the operational implications of IPv6 EHs.
+<xref target="background" format="default"/> of this document provides background information about the IPv6 packet structure and associated implications. <xref target="previous-work" format="default"/> summarizes previous work that has been carried out in the area of IPv6 extension headers. <xref target="pfe-constraints" format="default"/> discusses packet-forwarding engine constraints in contemporary routers. <xref target="inability" format="default"/> discusses why intermediate systems may need to access Layer 4 information to make a forwarding decision. Finally, <xref target="operational-implications" format="default"/> discusses operational implications of IPv6 EHs.
 </t>
     </section>
     <section numbered="true" toc="default">
@@ -123,10 +122,9 @@ This document uses the term "intermediate system" to describe both routers and m
 It is useful to compare the basic structure of IPv6 packets against that of IPv4 packets, and analyze the implications of the two different packet structures.
 </t>
 
-<!-- [fgont] SHould this be "of use to" instead of "of use for"? --> 
       <t>
     IPv4 packets have a variable-length header size that allows for the
-    use of IPv4 "options" -- optional information that may be of use for
+    use of IPv4 "options" -- optional information that may be of use to
     nodes processing IPv4 packets.  The IPv4 header length is specified
     in the "Internet Header Length" (IHL) field of the mandatory IPv4 header, and must be in
     the range of 20 octets (the minimum IPv4 header size) to 60 octets, accommodating at most 40 octets of options. The upper-layer protocol type is specified via the "Protocol" field of the mandatory IPv4 header.
@@ -272,9 +270,7 @@ For example, some contemporary high-end routers are known to inspect up to 192 b
 </t>
 </aside>
 
-<!-- [fgont] the text said "hardware-forwarding engine". But I think it should say "hardware forwarding-engine" ... i.e., itñs a hardware-based fw engine, rather than an engine that forwards hardware -->
-
-      <t>If a hardware forwarding-engine on a contemporary router cannot make a
+      <t>If a hardware-forwarding engine on a contemporary router cannot make a
 forwarding decision about a packet because critical information is not sent
 to the lookup engine, then the router will normally drop the packet. <xref target="inability" format="default"/> discusses some of the reasons for which a contemporary router might need to access Layer 4 information to make a forwarding decision.</t>
       <t>
@@ -360,8 +356,7 @@ or Layer 4 criteria to achieve a useful balance of protection and functionality.
           <li>Permit some amount of ICMP echo (ping) traffic towards a router's
  addresses for troubleshooting.</li>
  
- <!-- [fgont] May be "...and for connection establishment" instad? -->
-          <li>Permit BGP sessions on the shared network of an exchange point (potentially differentiating between the amount of packets/second permitted for established sessions and connection establishment), but do not permit other traffic from the same peer IP addresses.</li>
+          <li>Permit BGP sessions on the shared network of an exchange point (potentially differentiating between the amount of packets/second permitted for established sessions and for connection establishment), but do not permit other traffic from the same peer IP addresses.</li>
         </ul>
         <t>
 If a forwarding router cannot determine consistent n-tuples for calculating flow hashes, data streams are more likely to end up being distributed unequally across ECMP and load-shared links.  This may lead to packet drops or reduced performance.
@@ -382,7 +377,7 @@ to a network edge is often automated using BGP Flowspec <xref target="RFC8955" f
         <t>For example, a website that normally only handles traffic on TCP ports
 80 and 443 could be subject to a volumetric DDoS attack using NTP and DNS
 packets with a randomized source IP address, thereby rendering
-<xref target="RFC5635"/> source-based remote triggered black hole
+source-based remote triggered black hole <xref target="RFC5635"/>
 mechanisms useless.  In this situation, ACLs that provide DDoS protection could be configured to
 block all UDP traffic at the network edge without impairing the web server
 functionality in any way.  Thus, being able to block arbitrary
@@ -393,15 +388,14 @@ network and on the customer edge link.
       <section anchor="nids" numbered="true" toc="default">
         <name>Network Intrusion Detection and Prevention</name>
 
-<!-- [fgont] It would seem to me that the sentence "These systems.." would benefit from some tweaking. Maybe "These systems generally try to inspect application-layer traffic if possible but, at the bare minimum, will inspect Layer 4 flows." ?  -->	
-        <t>Network Intrusion Detection Systems (NIDS) examine network traffic and try to identify traffic patterns that can be correlated to network-based attacks. These systems generally inspect application-layer traffic (if possible) but, at the bare minimum, inspect Layer 4 flows. When attack activity is inferred, the operator is notified of the potential intrusion attempt.
+        <t>Network Intrusion Detection Systems (NIDS) examine network traffic and try to identify traffic patterns that can be correlated to network-based attacks. These systems generally attempt to inspect application-layer traffic (if possible) but, at the bare minimum, inspect Layer 4 flows. When attack activity is inferred, the operator is notified of the potential intrusion attempt.
 </t>
         <t>Network Intrusion Prevention Systems (IPS) operate similarly to NIDSs, but they can also prevent intrusions by reacting to detected attack attempts by e.g., triggering packet filtering policies at firewalls and other devices.</t>
         <t>Use of extension headers can be problematic for NIDS/IPS, since:
 </t>
         <ul spacing="normal">
           <li>Extension headers increase the complexity of resulting traffic and the associated work and system requirements to process it.</li>
-          <li>Use of unknown extension headers can prevent a NIDS or IPS from processing layer-4 information.</li>
+          <li>Use of unknown extension headers can prevent a NIDS or IPS from processing Layer 4 information.</li>
           <li>Use of IPv6 fragmentation requires a stateful fragment-reassembly operation, even for decoy traffic employing forged source addresses (see, e.g., <xref target="nmap" format="default"/>).</li>
         </ul>
         <t>As a result, in order to increase the efficiency or effectiveness of these systems, packets employing IPv6 extension headers are often dropped at the network ingress point(s) of networks that deploy these systems.</t>
