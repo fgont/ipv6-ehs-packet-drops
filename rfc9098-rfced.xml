@@ -337,7 +337,7 @@ further Layer 4 src/dst port information.
 </t>
         <t>In the IPv6 world, flows are expected to be identified by means of the IPv6 "Flow Label" <xref target="RFC6437" format="default"/>. Thus, ECMP and hash-based load sharing should be possible without the need to process the entire IPv6 header chain to obtain upper-layer information to identify flows. <xref target="RFC7098" format="default"/> discusses how the IPv6 Flow Label can be used to enhance Layer 3/4 load distribution and balancing for large server farms.
 </t>
-        <t>Historically, many IPv6 implementations failed to set the Flow Label, and hash-based ECMP/load-sharing devices also did not employ the Flow Label for performing their task. While support of <xref target="RFC6437" format="default"/> is currently widespread for current versions of all popular host implementations, there is still only marginal usage of the IPv6 Flow Label for ECMP and load balancing <xref target="Cunha-2020" format="default"/>. A contributing factor could be the issues that have been found in host implementations and middleboxes <xref target="Jaeggli-2018" format="default"/>.</t>
+        <t>Historically, many IPv6 implementations failed to set the Flow Label, and hash-based ECMP/load-sharing devices also did not employ the Flow Label for performing their task. While support of <xref target="RFC6437" format="default"/> is currently widespread for current versions of all popular host implementations, there is still only marginal usage of the IPv6 Flow Label for ECMP and load balancing <xref target="Almeida-2020" format="default"/>. A contributing factor could be the issues that have been found in host implementations and middleboxes <xref target="Jaeggli-2018" format="default"/>.</t>
         <t>
 Clearly, widespread support of <xref target="RFC6437" format="default"/> would relieve intermediate systems from having to process the entire IPv6 header chain, making Flow Label-based ECMP and load sharing <xref target="RFC6438" format="default"/> feasible.
 </t>
@@ -704,15 +704,34 @@ href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8956.xml"/>
           <refcontent>APNIC Blog</refcontent>
         </reference>
 
-        <reference anchor="Cunha-2020" target="https://www.cmand.org/workshops/202006-v6/agenda.php">
+        <reference anchor="Almeida-2020" target="https://homepages.dcc.ufmg.br/~cunha/papers/almeida20infocom-mca.pdf">
           <front>
-            <title>IPv4 vs. IPv6 load balancing in Internet routes</title>
+            <title>Classification of Load Balancing in the Internet</title>
+            
+         
+            <author fullname="Rafael Almeida" initials="R." surname="Almeida">
+              <organization abbrev="UFMG"/>
+            </author>
+
             <author fullname="Italo Cunha" initials="I." surname="Cunha">
               <organization abbrev="UFMG"/>
             </author>
+
+            <author fullname="Renata Teixeira" initials="R" surname="Teixeira">
+              <organization abbrev="INRIA"/>
+            </author>
+               
+            <author fullname="Darryl Veitcha" initials="D." surname="Veitcha">
+              <organization abbrev="UTS"/>
+            </author>
+            
+            <author fullname="Christophe Diot" initials="C." surname="Diot">
+              <organization abbrev="Google"/>
+            </author>
+            
             <date year="2020"/>
           </front>
-          <refcontent>NPS/CAIDA 2020 Virtual IPv6 Workshop</refcontent>
+          <refcontent>IEEE INFOCOM 2020, DOI 10.1109/INFOCOM41043.2020.9155387</refcontent>
         </reference>
 
 	
