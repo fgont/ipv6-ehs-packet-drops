@@ -112,11 +112,11 @@ Table of Contents
 
    Section 4 of this document provides background information about the
    IPv6 packet structure and associated implications.  Section 5
-   summarizes the previous work that has been carried out in the area of
+   summarizes previous work that has been carried out in the area of
    IPv6 extension headers.  Section 6 discusses packet-forwarding engine
    constraints in contemporary routers.  Section 7 discusses why
    intermediate systems may need to access Layer 4 information to make a
-   forwarding decision.  Finally, Section 8 discusses the operational
+   forwarding decision.  Finally, Section 8 discusses operational
    implications of IPv6 EHs.
 
 2.  Terminology
@@ -141,7 +141,7 @@ Table of Contents
    different packet structures.
 
    IPv4 packets have a variable-length header size that allows for the
-   use of IPv4 "options" -- optional information that may be of use for
+   use of IPv4 "options" -- optional information that may be of use to
    nodes processing IPv4 packets.  The IPv4 header length is specified
    in the "Internet Header Length" (IHL) field of the mandatory IPv4
    header, and must be in the range of 20 octets (the minimum IPv4
@@ -317,7 +317,7 @@ Table of Contents
       |     inspect up to 192 bytes, while others are known to parse up
       |     to 384 bytes of header.
 
-   If a hardware forwarding-engine on a contemporary router cannot make
+   If a hardware-forwarding engine on a contemporary router cannot make
    a forwarding decision about a packet because critical information is
    not sent to the lookup engine, then the router will normally drop the
    packet.  Section 7 discusses some of the reasons for which a
@@ -398,7 +398,7 @@ Table of Contents
    Label for performing their task.  While support of [RFC6437] is
    currently widespread for current versions of all popular host
    implementations, there is still only marginal usage of the IPv6 Flow
-   Label for ECMP and load balancing [Cunha-2020].  A contributing
+   Label for ECMP and load balancing [Almeida-2020].  A contributing
    factor could be the issues that have been found in host
    implementations and middleboxes [Jaeggli-2018].
 
@@ -428,8 +428,9 @@ Table of Contents
 
    *  Permit BGP sessions on the shared network of an exchange point
       (potentially differentiating between the amount of packets/second
-      permitted for established sessions and connection establishment),
-      but do not permit other traffic from the same peer IP addresses.
+      permitted for established sessions and for connection
+      establishment), but do not permit other traffic from the same peer
+      IP addresses.
 
    If a forwarding router cannot determine consistent n-tuples for
    calculating flow hashes, data streams are more likely to end up being
@@ -454,7 +455,7 @@ Table of Contents
    For example, a website that normally only handles traffic on TCP
    ports 80 and 443 could be subject to a volumetric DDoS attack using
    NTP and DNS packets with a randomized source IP address, thereby
-   rendering [RFC5635] source-based remote triggered black hole
+   rendering source-based remote triggered black hole [RFC5635]
    mechanisms useless.  In this situation, ACLs that provide DDoS
    protection could be configured to block all UDP traffic at the
    network edge without impairing the web server functionality in any
@@ -466,10 +467,10 @@ Table of Contents
 
    Network Intrusion Detection Systems (NIDS) examine network traffic
    and try to identify traffic patterns that can be correlated to
-   network-based attacks.  These systems generally inspect application-
-   layer traffic (if possible) but, at the bare minimum, inspect Layer 4
-   flows.  When attack activity is inferred, the operator is notified of
-   the potential intrusion attempt.
+   network-based attacks.  These systems generally attempt to inspect
+   application-layer traffic (if possible) but, at the bare minimum,
+   inspect Layer 4 flows.  When attack activity is inferred, the
+   operator is notified of the potential intrusion attempt.
 
    Network Intrusion Prevention Systems (IPS) operate similarly to
    NIDSs, but they can also prevent intrusions by reacting to detected
@@ -482,7 +483,7 @@ Table of Contents
       the associated work and system requirements to process it.
 
    *  Use of unknown extension headers can prevent a NIDS or IPS from
-      processing layer-4 information.
+      processing Layer 4 information.
 
    *  Use of IPv6 fragmentation requires a stateful fragment-reassembly
       operation, even for decoy traffic employing forged source
@@ -689,6 +690,13 @@ Table of Contents
 
 11.2.  Informative References
 
+   [Almeida-2020]
+              Almeida, R., Cunha, I., Teixeira, R., Veitcha, D., and C.
+              Diot, "Classification of Load Balancing in the Internet",
+              IEEE INFOCOM 2020, DOI 10.1109/INFOCOM41043.2020.9155387,
+              2020, <https://homepages.dcc.ufmg.br/~cunha/papers/
+              almeida20infocom-mca.pdf>.
+
    [APNIC-Scudder]
               Scudder, J., "Modern router architecture and IPv6", APNIC
               Blog, June 2020, <https://blog.apnic.net/2020/06/04/
@@ -729,11 +737,6 @@ Table of Contents
               of Service Vulnerability", June 2015,
               <http://tools.cisco.com/security/center/content/
               CiscoSecurityAdvisory/cisco-sa-20150611-iosxr>.
-
-   [Cunha-2020]
-              Cunha, I., "IPv4 vs. IPv6 load balancing in Internet
-              routes", NPS/CAIDA 2020 Virtual IPv6 Workshop, 2020,
-              <https://www.cmand.org/workshops/202006-v6/agenda.php>.
 
    [FreeBSD-SA]
               The FreeBSD Project, "IPv6 Hop-by-Hop options use-after-
